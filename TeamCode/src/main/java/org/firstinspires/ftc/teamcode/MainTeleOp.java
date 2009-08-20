@@ -40,16 +40,16 @@ public class MainTeleOp extends OpMode
 
     //These outline the starting positions of all of the servos, as well as the range they're allowed to work in.
     //This is in degrees.
-    private double servoGlyphLeftPosition = 180 ;
+    private double servoGlyphLeftPosition = 180;
     private double servoGlyphRightPosition = 0;
     private double servoRelicServoFrontPosition = 45;
     private double servoRelicServoBackPosition = 80;
-    private double servoRelicServoPitchPosition = 0;
-    private double servoJewelWhackerServoPosition = 0;
+    private double servoRelicServoPitchPosition = 180;
+    private double servoJewelWhackerServoPosition = 5;
     private final static double servoMinRange  = 1;
     private final static double servoMaxRange  = 180;
     private double motorSpeedMultiplier = .6;
-
+    String consoleOut = "Nothing Yet";
 
     @Override
     public void init() {
@@ -114,7 +114,8 @@ public class MainTeleOp extends OpMode
         Gyro.calibrate();
     }
 
-
+    boolean Extending = false;
+    boolean Retracting = false;
     @Override
     public void loop() {
         //Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
@@ -122,11 +123,8 @@ public class MainTeleOp extends OpMode
         // Setup a variable for each drive wheel and servos to save power level for telemetry.
         double RelicGrabberExtensionPos = MotorRelicExtension.getCurrentPosition();
         double MotorGlyphGrabberPos = MotorGlyphGrabber.getCurrentPosition();
-        int GyroPos = Gyro.getHeading();
-
 
         // Init some local variables.
-        String consoleOut = "Nothing Yet";
 
         //Gamepad 1 Controls
         // POV Mode written by dmssargent, sourced from the FTC Forum.
@@ -150,22 +148,37 @@ public class MainTeleOp extends OpMode
         }
 
         //Gamepad 2 Controls
+
+        servoGlyphLeftPosition = 180 - gamepad2.right_stick_x * 180;
+        servoGlyphRightPosition = 0 - -gamepad2.right_stick_x * 180;
+        double v5 = gamepad2.left_stick_y * 0.15;
+
+
         if (gamepad2.dpad_up) {
             consoleOut = "Extending Relic Grabber To Maximum Length";
-            MotorRelicExtension.setTargetPosition(35);
-            MotorRelicExtension.setPower(.2);
+            servoRelicServoPitchPosition = 150;
+            Extending = true;
+            Retracting = false;
         }
 
         if (gamepad2.dpad_down) {
             consoleOut = "Stopped Relic Grabber Extension";
-            MotorRelicExtension.setPower(0);
-            RelicServoPitch.setPosition(30);
+            Extending = false;
+            Retracting = false;
         }
 
         if (gamepad2.dpad_left) {
             consoleOut = "Returning Relic Extension";
-            MotorRelicExtension.setTargetPosition(0);
-            MotorRelicExtension.setPower(-.2);
+            Extending = false;
+            Retracting = true;
+        }
+
+        if (gamepad2.a) {
+            servoRelicServoPitchPosition = 0;
+        }
+
+        if (gamepad2.b) {
+            servoRelicServoPitchPosition = 180;
         }
 
         if (gamepad2.x) {
@@ -174,26 +187,15 @@ public class MainTeleOp extends OpMode
         }
 
         if (gamepad2.y) {
-            servoRelicServoBackPosition = 15;
-            servoRelicServoFrontPosition = 160;
+            servoRelicServoBackPosition = 90;
+            servoRelicServoFrontPosition = 90;
         }
-
-        if (gamepad2.b) {
-            servoGlyphLeftPosition = 90;
-            servoGlyphRightPosition = 90;
-        }
-
-        if (gamepad2.a) {
-            servoGlyphLeftPosition = 80;
-            servoGlyphRightPosition = 100;
-        }
-
 
         // Set Servo position to variable "servoPosition"
-        servoGlyphLeftPosition = Range.clip(servoGlyphLeftPosition, servoMinRange, servoMaxRange); //Clips servo range into usable area. Protects from over extension.
+        servoGlyphLeftPosition = Range.clip(servoGlyphLeftPosition, 0, 180); //Clips servo range into usable area. Protects from over extension.
         GlyphServoLeft.setPosition(servoGlyphLeftPosition / 180); //This converts from degrees into 0-1 automagically.
 
-        servoGlyphRightPosition = Range.clip(servoGlyphRightPosition, servoMinRange, servoMaxRange);
+        servoGlyphRightPosition = Range.clip(servoGlyphRightPosition, 0, 180);
         GlyphServoRight.setPosition(servoGlyphRightPosition / 180);
 
         servoRelicServoFrontPosition = Range.clip(servoRelicServoFrontPosition, servoMinRange, servoMaxRange);
@@ -213,18 +215,43 @@ public class MainTeleOp extends OpMode
         DriveRightFront.setPower(v2 * motorSpeedMultiplier);
         DriveLeftRear.setPower(v3 * motorSpeedMultiplier);
         DriveRightRear.setPower(v4 * motorSpeedMultiplier);
+        MotorGlyphGrabber.setPower(v5);
 
-        //This code will prevent the Relic Extender from hurting itself.
-        //if RelicGrabberExtensionPos = 720{
+        //Read Positions Of Motors + Gyro
+        double DriveLeftFrontPos = DriveLeftFront.getCurrentPosition();
+        double DriveRightFrontPos = DriveRightFront.getCurrentPosition();
+        double DriveLeftRearPos = DriveLeftRear.getCurrentPosition();
+        double DriveRightRearPos = DriveRightRear.getCurrentPosition();
+        int GyroPos = Gyro.getHeading();
 
-        //}
+        //Automated Relic Extension/Retraction
+        if (Extending) {
+            if (MotorRelicExtension.getCurrentPosition() > 7400) {
+                MotorRelicExtension.setPower(0);
+            } else {
+                MotorRelicExtension.setPower(.15);
+            }
+        }
+
+        if (Retracting) {
+            if (MotorRelicExtension.getCurrentPosition() > 0) {
+                MotorRelicExtension.setPower(-.15);
+            } else {
+                MotorRelicExtension.setPower(0);
+            }
+        }
+
+
+
+
 
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Running, Run Time: " + runtime.toString());
-        telemetry.addData("FrontMotors:", DriveLeftFront.toString() + DriveRightFront.toString());
-        telemetry.addData("RearMotors:", DriveLeftRear.toString(), DriveRightRear.toString());
-        telemetry.addData("RelicGrabberExtensionPos", "Position:" + RelicGrabberExtensionPos);
-        telemetry.addData("MotorGlyphGrabberPos", "Position:" + MotorGlyphGrabberPos);
+        telemetry.addData("FrontMotors", "Left: " + DriveLeftFrontPos, "Right: " + DriveRightFrontPos);
+        telemetry.addData("RearMotors", "Left: "+ DriveLeftRearPos, "Right: " + DriveRightRearPos);
+        telemetry.addData("RelicGrabberExtensionPos", RelicGrabberExtensionPos);
+        telemetry.addData("MotorGlyphGrabberPos", MotorGlyphGrabberPos);
+        telemetry.addData("GyroPos", GyroPos);
         telemetry.addData( "Motor Speed","%.2f", motorSpeedMultiplier);
         telemetry.addData( "Console Out", consoleOut);
     }
