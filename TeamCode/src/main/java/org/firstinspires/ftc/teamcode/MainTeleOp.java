@@ -48,8 +48,8 @@ public class MainTeleOp extends OpMode
     private double servoJewelWhackerServoPosition = 5;
     private final static double servoMinRange  = 1;
     private final static double servoMaxRange  = 180;
-    private double motorSpeedMultiplier = .55;
-    String consoleOut = "Nothing Yet";
+    private double motorSpeedMultiplier = .2;
+    private String consoleOut = "Nothing Yet";
 
     @Override
     public void init() {
@@ -114,9 +114,10 @@ public class MainTeleOp extends OpMode
         Gyro.calibrate();
     }
 
-    boolean Extending = false;
-    boolean Retracting = false;
-    boolean UseServoStick = true;
+    private boolean Extending = false;
+    private boolean Retracting = false;
+    private boolean UseServoStick = true;
+    private boolean DriveMode = false; //False is for Glyphs, True is for Relic
     @Override
     public void loop() {
         //Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
@@ -139,12 +140,12 @@ public class MainTeleOp extends OpMode
         final double v4 = r * Math.cos(robotAngle) - rightX;
 
         if (gamepad1.a) {
-            motorSpeedMultiplier = .55;
+            motorSpeedMultiplier = .2;
             DeviceIM.setLED(1, false);
         }
 
         if (gamepad1.b) {
-            motorSpeedMultiplier = .2;
+            motorSpeedMultiplier = .55;
             DeviceIM.setLED(1, true);
         }
 
@@ -155,8 +156,11 @@ public class MainTeleOp extends OpMode
             servoGlyphRightPosition = 0 - -gamepad2.right_stick_x * 180;
         }
 
-        double v5 = gamepad2.left_stick_y * 0.15;
+        if (DriveMode){
+        } else {
+        }
 
+        double v5 = gamepad2.left_stick_y * 0.15;
 
         if (gamepad2.dpad_up) {
             consoleOut = "Extending Relic Grabber To Maximum Length";
@@ -166,7 +170,7 @@ public class MainTeleOp extends OpMode
         }
 
         if (gamepad2.dpad_down) {
-            consoleOut = "Stopped Relic Grabber Extension";
+            consoleOut = "Stopped Relic Grabber Extension/Retraction";
             Extending = false;
             Retracting = false;
         }
@@ -175,6 +179,16 @@ public class MainTeleOp extends OpMode
             consoleOut = "Returning Relic Extension";
             Extending = false;
             Retracting = true;
+        }
+
+        if (gamepad2.dpad_right) {
+            if (DriveMode){
+                DriveMode = true;
+                consoleOut = "Set Drive Mode to Relic Mode";
+            } else {
+                DriveMode = false;
+                consoleOut = "Set Drive Mode to Glyph Mode";
+            }
         }
 
         //Toggle the Right Stick controlling the glyph grabber servos.
@@ -203,16 +217,16 @@ public class MainTeleOp extends OpMode
         }
 
         if (gamepad2.x) {
-            servoRelicServoFrontPosition = 160;
-            servoRelicServoBackPosition = 15;
+            servoRelicServoFrontPosition = 145;
+            servoRelicServoBackPosition = 90;
         }
 
         if (gamepad2.y) {
+            servoRelicServoFrontPosition = 35;
             servoRelicServoBackPosition = 90;
-            servoRelicServoFrontPosition = 90;
         }
 
-        // Set Servo position to variable "servoPosition"
+        // Set Servo positions to variable "servoPosition"(s)
         servoGlyphLeftPosition = Range.clip(servoGlyphLeftPosition, 0, 180); //Clips servo range into usable area. Protects from over extension.
         GlyphServoLeft.setPosition(servoGlyphLeftPosition / 180); //This converts from degrees into 0-1 automagically.
 

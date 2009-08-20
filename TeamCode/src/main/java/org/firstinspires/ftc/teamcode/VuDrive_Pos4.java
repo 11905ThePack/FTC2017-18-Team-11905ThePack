@@ -63,9 +63,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * is explained in {@link}.
  */
 
-@Autonomous(name="Concept: VuDrive Id2 ", group ="Concept")
+@Autonomous(name="Concept: VuDrive Id4 ", group ="Concept")
 //@Disabled
-public class VuDrive_Pos2 extends LinearOpMode {
+public class VuDrive_Pos4 extends LinearOpMode {
 
     public static final String TAG = "Vuforia VuMark Sample";
 
@@ -141,14 +141,13 @@ public class VuDrive_Pos2 extends LinearOpMode {
 
                 if (vuMark != RelicRecoveryVuMark.LEFT) {
 
-                    encoderDrive(DRIVE_SPEED,36,36,5);
-                    encoderDrive(TURN_SPEED,-3,3,5);
                     encoderDrive(DRIVE_SPEED,12,12,5);
+                    encoderDrive(TURN_SPEED,-3,2,5);
+                    encoderDrive(DRIVE_SPEED,36,36,5);
                     encoderDrive(TURN_SPEED,3,-3,5);
                     encoderDrive(DRIVE_SPEED,6,6,5);
                     encoderDrive(TURN_SPEED,3,-3,5);
                     encoderDrive(DRIVE_SPEED,1,1,5);
-
 
 
                 }
@@ -156,7 +155,7 @@ public class VuDrive_Pos2 extends LinearOpMode {
                 if (vuMark != RelicRecoveryVuMark.CENTER) {
 
                     encoderDrive(DRIVE_SPEED,36,36,2);
-                    encoderDrive(TURN_SPEED,-3,3,2);
+                    encoderDrive(TURN_SPEED,3,-3,2);
                     encoderDrive(DRIVE_SPEED,12,12,2);
 
                 }
@@ -164,14 +163,12 @@ public class VuDrive_Pos2 extends LinearOpMode {
                 if (vuMark != RelicRecoveryVuMark.RIGHT) {
 
                     encoderDrive(DRIVE_SPEED,36,36,2);
-                    encoderDrive(TURN_SPEED,-3,3,2);
+                    encoderDrive(TURN_SPEED,3,-3,2);
                     encoderDrive(DRIVE_SPEED,12,12,2);
                     encoderDrive(TURN_SPEED,3,-3,2);
                     encoderDrive(DRIVE_SPEED,6,6,2);
                     encoderDrive(TURN_SPEED,-3,3,2);
                     encoderDrive(DRIVE_SPEED,1,1,2);
-
-
 
                 }
 
@@ -235,7 +232,7 @@ public class VuDrive_Pos2 extends LinearOpMode {
 
 
             while (opModeIsActive() &&
-              //      (runtime.seconds() < timeoutS) &&
+                    //(runtime.seconds() < timeoutS) &&
                     (DriveLeftRear.isBusy() && DriveRightRear.isBusy())) {
 
                 // Display it for the driver.
@@ -258,7 +255,7 @@ public class VuDrive_Pos2 extends LinearOpMode {
             DriveLeftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             DriveRightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-              sleep(250);   // optional pause after each move
+            //  sleep(250);   // optional pause after each move
 
         }
 

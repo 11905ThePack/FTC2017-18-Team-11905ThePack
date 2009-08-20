@@ -31,6 +31,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
 import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
@@ -67,21 +68,21 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 //@Disabled
 public class VuDrive_Pos1 extends LinearOpMode {
 
-    public static final String TAG = "Vuforia VuMark Sample";
+    private ElapsedTime runtime = new ElapsedTime(); //Elapsed Time
 
-    private DcMotor DriveLeftFront = null; //Left Front Motor
-    private DcMotor DriveRightFront = null; //Right Front Motor
-    private DcMotor DriveLeftRear = null; //Left Rear Motor
+    private DcMotor DriveLeftRear = null; //Left Front Motor
+    private DcMotor DriveRightRear = null; //Right Front Motor
+    private DcMotor DriveLeftFront = null; //Left Rear Motor
+    private DcMotor DriveRightFront = null;
 
-    static final double COUNTS_PER_MOTOR_REV = 1000;
-    private DcMotor DriveRightRear = null; //Right Rear Motor
-    static final double DRIVE_GEAR_REDUCTION = 2.0;
+    static final double COUNTS_PER_MOTOR_REV = 560;
+    static final double DRIVE_GEAR_REDUCTION = 20.0;
     static final double WHEEL_DIAMETER_INCHES = 4.0;  // For finding circumference
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
     static final double DRIVE_SPEED = 0.3;
     static final double TURN_SPEED = 0.5;
-    static final double TRANSLATE_SPEED = 0.55;
+   // static final double TRANSLATE_SPEED = 0.55;
 
 
 
@@ -141,34 +142,34 @@ public class VuDrive_Pos1 extends LinearOpMode {
 
                 if (vuMark != RelicRecoveryVuMark.LEFT) {
 
-                    encoderDrive(DRIVE_SPEED,36,36,2);
-                    encoderDrive(TURN_SPEED,3,-3,2);
-                    encoderDrive(DRIVE_SPEED,12,12,2);
-                    encoderDrive(TURN_SPEED,3,-3,2);
-                    encoderDrive(DRIVE_SPEED,6,6,2);
-                    encoderDrive(TURN_SPEED,3,-3,2);
-                    encoderDrive(DRIVE_SPEED,1,1,2);
+                    encoderDrive(DRIVE_SPEED,36,36,5); //S1
+                    encoderDrive(TURN_SPEED,3,-3,5); //S2
+                    encoderDrive(DRIVE_SPEED,12,12,5); //S3
+                    encoderDrive(TURN_SPEED,3,-3,5);
+                    encoderDrive(DRIVE_SPEED,6,6,5);
+                    encoderDrive(TURN_SPEED,3,-3,5);
+                    encoderDrive(DRIVE_SPEED,1,1,5);
 
 
                 }
 
                 if (vuMark != RelicRecoveryVuMark.CENTER) {
 
-                    encoderDrive(DRIVE_SPEED,36,36,2);
-                    encoderDrive(TURN_SPEED,3,-3,2);
-                    encoderDrive(DRIVE_SPEED,12,12,2);
+                    encoderDrive(DRIVE_SPEED,36,36,5);
+                    encoderDrive(TURN_SPEED,3,-3,5);
+                    encoderDrive(DRIVE_SPEED,12,12,5);
 
                 }
 
                 if (vuMark != RelicRecoveryVuMark.RIGHT) {
 
-                    encoderDrive(DRIVE_SPEED,36,36,2);
-                    encoderDrive(TURN_SPEED,3,-3,2);
-                    encoderDrive(DRIVE_SPEED,12,12,2);
-                    encoderDrive(TURN_SPEED,3,-3,2);
-                    encoderDrive(DRIVE_SPEED,6,6,2);
-                    encoderDrive(TURN_SPEED,-3,3,2);
-                    encoderDrive(DRIVE_SPEED,1,1,2);
+                    encoderDrive(DRIVE_SPEED,36,36,10);
+                    encoderDrive(TURN_SPEED,3,-3,10);
+                    encoderDrive(DRIVE_SPEED,12,12,10);
+                    encoderDrive(TURN_SPEED,3,-3,10);
+                    encoderDrive(DRIVE_SPEED,6,6,10);
+                    encoderDrive(TURN_SPEED,-3,3,10);
+                    encoderDrive(DRIVE_SPEED,1,1,10 );
 
                 }
 
@@ -203,27 +204,42 @@ public class VuDrive_Pos1 extends LinearOpMode {
     public void encoderDrive(double speed,
                              double leftInches, double rightInches,
                              double timeoutS) {
-        int newLeftTarget;
-        int newRightTarget;
+        int newLeftBackTarget;
+        int newRightBackTarget;
+        int newLeftFrontTarget;
+        int newRightFrontTarget;
 
         //Ensures OpMode is running
         if (opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
-            newLeftTarget = DriveLeftRear.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
-            newRightTarget = DriveRightRear.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
+            newLeftBackTarget = DriveLeftRear.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
+            newRightBackTarget = DriveRightRear.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
+            newLeftFrontTarget = DriveLeftFront.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
+            newRightFrontTarget = DriveRightFront.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
 
 
-            DriveLeftRear.setTargetPosition(newLeftTarget);
-            DriveRightRear.setTargetPosition(newRightTarget);
-            DriveLeftFront.setTargetPosition(newLeftTarget);
-            DriveRightFront.setTargetPosition(newRightTarget);
+            DriveLeftRear.setTargetPosition(newLeftBackTarget);
+            DriveRightRear.setTargetPosition(newRightBackTarget);
+            DriveLeftFront.setTargetPosition(newLeftFrontTarget);
+            DriveRightFront.setTargetPosition(newRightFrontTarget);
 
             // Turn On RUN_TO_POSITION
             DriveLeftRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             DriveRightRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             DriveLeftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             DriveRightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            while (opModeIsActive() &&
+                    (runtime.seconds() < timeoutS) &&
+                    (DriveLeftRear.isBusy() && DriveRightRear.isBusy())) {
+
+                // Display it for the driver.
+                telemetry.addData("Path1", "Running to %7d :%7d", newLeftBackTarget, newRightBackTarget);
+                telemetry.addData("Path2", "Running at %7d :%7d",
+                        DriveLeftRear.getCurrentPosition(),
+                        DriveRightRear.getCurrentPosition());
+                telemetry.update();
 
             // reset the timeout time and start motion.
             //runtime.reset();
@@ -232,20 +248,8 @@ public class VuDrive_Pos1 extends LinearOpMode {
             DriveLeftFront.setPower(Math.abs(speed));
             DriveRightFront.setPower(Math.abs(speed));
 
-
-            while (opModeIsActive() &&
-                    //(runtime.seconds() < timeoutS) &&
-                    (DriveLeftRear.isBusy() && DriveRightRear.isBusy())) {
-
-                // Display it for the driver.
-                telemetry.addData("Path1", "Running to %7d :%7d", newLeftTarget, newRightTarget);
-                telemetry.addData("Path2", "Running at %7d :%7d",
-                        DriveLeftRear.getCurrentPosition(),
-                        DriveRightRear.getCurrentPosition());
-                telemetry.update();
-            }
-
             // Stop all motion;
+            runtime.reset();
             DriveLeftRear.setPower(0);
             DriveRightRear.setPower(0);
             DriveLeftFront.setPower(0);
@@ -257,7 +261,10 @@ public class VuDrive_Pos1 extends LinearOpMode {
             DriveLeftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             DriveRightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-            //  sleep(250);   // optional pause after each move
+        }
+
+
+            sleep(250);   // optional pause after each move
 
         }
 
