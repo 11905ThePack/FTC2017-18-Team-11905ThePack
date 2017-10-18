@@ -115,8 +115,8 @@ public class Tank_Drive extends OpMode
 
         // Tank Mode uses one stick to control each wheel.
         // - This requires no math, but it is hard to drive forward slowly and keep straight.
-         MotorLeftPower  = -gamepad1.left_stick_y ;
-         MotorRightPower = -gamepad1.right_stick_y ;
+         MotorLeftPower  = gamepad1.left_stick_y ;
+         MotorRightPower = gamepad1.right_stick_y ;
 
         // Send calculated power to wheels
         MotorLeft.setPower(MotorLeftPower);
