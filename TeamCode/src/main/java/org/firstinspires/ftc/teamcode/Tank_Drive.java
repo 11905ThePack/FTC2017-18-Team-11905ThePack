@@ -30,6 +30,7 @@ package org.firstinspires.ftc.teamcode;/* Copyright (c) 2017 FIRST. All rights r
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 /**
@@ -70,8 +71,8 @@ public class Tank_Drive extends OpMode
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
-        MotorLeft.setDirection(DcMotor.Direction.FORWARD);
-        MotorRight.setDirection(DcMotor.Direction.REVERSE);
+        MotorLeft.setDirection(DcMotor.Direction.REVERSE);
+        MotorRight.setDirection(DcMotor.Direction.FORWARD);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
@@ -115,8 +116,8 @@ public class Tank_Drive extends OpMode
 
         // Tank Mode uses one stick to control each wheel.
         // - This requires no math, but it is hard to drive forward slowly and keep straight.
-         MotorLeftPower  = gamepad1.left_stick_y ;
-         MotorRightPower = gamepad1.right_stick_y ;
+         MotorLeftPower  = -gamepad1.left_stick_y ;
+         MotorRightPower = -gamepad1.right_stick_y ;
 
         // Send calculated power to wheels
         MotorLeft.setPower(MotorLeftPower);
