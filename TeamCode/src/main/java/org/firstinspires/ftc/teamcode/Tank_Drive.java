@@ -33,6 +33,8 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.Range;
+
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
  * An OpMode is a 'program' that runs in either the autonomous or the teleop period of an FTC match.
@@ -68,6 +70,23 @@ public class Tank_Drive extends OpMode
         // step (using the FTC Robot Controller app on the phone).
         MotorLeft = hardwareMap.get(DcMotor.class, "MotorLeft");
         MotorRight = hardwareMap.get(DcMotor.class, "MotorRight");
+
+        if (gamepad1.a)
+            armPosition += ARM_SPEED;
+        else if (gamepad1.y)
+            armPosition -= ARM_SPEED;
+
+        // Use gamepad X & B to open and close the claw
+        if (gamepad1.x)
+            clawPosition += CLAW_SPEED;
+        else if (gamepad1.b)
+            clawPosition -= CLAW_SPEED;
+
+        // Move both servos to new position.
+        armPosition  = Range.clip(armPosition, robot.ARM_MIN_RANGE, robot.ARM_MAX_RANGE);
+        robot.arm.setPosition(armPosition);
+        clawPosition = Range.clip(clawPosition, robot.CLAW_MIN_RANGE, robot.CLAW_MAX_RANGE);
+        robot.claw.setPosition(clawPosition);
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
