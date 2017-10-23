@@ -52,7 +52,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 @Autonomous(name = "Concept: DIM As Indicator", group = "Concept")
-//@Disabled
+@Disabled
 public class ConceptDIMAsIndicator extends LinearOpMode {
 
     static final int    BLUE_LED    = 0;     // Blue LED channel on DIM
