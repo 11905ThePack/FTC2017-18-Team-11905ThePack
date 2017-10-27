@@ -37,28 +37,30 @@ import com.qualcomm.robotcore.util.Range;
 import static android.os.SystemClock.sleep;
 
 
-@TeleOp(name="TankDrive", group="Iterative Opmode")
+@TeleOp(name="TankDrive", group="Drive-Type OpModes")
 //@Disabled
 public class Tank_Drive extends OpMode
 {
-    // Declare OpMode members.
+    // Declare OpMode variables for use.
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor MotorLeft = null;
     private DcMotor MotorRight = null;
-    public Servo Servo = null;
+    private Servo Servo = null;
 
-    public final static double servoStop = 0.2;
-    double servoPostition = servoStop;                   // Servo safe position
+    private DcMotor motorSpeedMultiplier = null ;
 
-    final double servoSpeed = 0.01 ;
-    public final static double servoMinRange  = 0.20;
-    public final static double servoMaxRange  = 0.90;
+    private final static double servoStop = 0.2;
+    private double servoPostition = servoStop;  // Servo safe position
 
-    /*
-     * Code to run ONCE when the driver hits INIT
-     */
+    private final double servoSpeed = 0.01 ;
+    private final static double servoMinRange  = 0.20;
+    private final static double servoMaxRange  = 0.90;
+
+
     @Override
     public void init() {
+        // Code to run ONCE when the driver hits INIT
+
         telemetry.addData("Status", "Initialized");
 
         // Initialize the hardware variables. Note that the strings used here as parameters
@@ -67,8 +69,6 @@ public class Tank_Drive extends OpMode
         MotorLeft = hardwareMap.get(DcMotor.class, "MotorLeft");
         MotorRight = hardwareMap.get(DcMotor.class, "MotorRight");
         Servo = hardwareMap.get(Servo.class, "Servo");
-
-
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -79,29 +79,28 @@ public class Tank_Drive extends OpMode
         telemetry.addData("Status", "Initialized");
     }
 
-    /*
-     * Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
-     */
+
     @Override
     public void init_loop() {
+        //Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
+
         telemetry.addData("Status:", "Armed");
 
     }
 
-    /*
-     * Code to run ONCE when the driver hits PLAY
-     */
+
     @Override
     public void start() {
+        //Code to run ONCE when the driver hits PLAY
         runtime.reset();
     }
 
-    /*
-     * Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
-     */
+
     @Override
     public void loop() {
-        // Setup a variable for each drive wheel to save power level for telemetry
+        //Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
+
+        // Setup a variable for each drive wheel to save power level for telemetry (I may move these to init; not sure yet.)
         double MotorLeftPower;
         double MotorRightPower;
 
@@ -116,41 +115,42 @@ public class Tank_Drive extends OpMode
         //MotorRightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
 
         // Tank Mode uses one stick to control each wheel.
-        // - This requires no math, but it is hard to drive forward slowly and keep straight.
+        // - This requires no math, but it is hard to drive forward slowly and keep straight. (I'm going to add my patented [not patented] motor power scaling here.)
          MotorLeftPower  = -gamepad1.left_stick_y ;
          MotorRightPower = -gamepad1.right_stick_y ;
 
 
 
-        // Use gamepad Y & A set Servo's wariables.
+        // Use gamepad Y & A set Servo's variables.
         if (gamepad1.a)
             servoPostition += servoSpeed;
         else if (gamepad1.y)
             servoPostition -= servoSpeed;
 
-        // Set Servo to set position.
+        // Set Servo position to variable "servoPosition"
         servoPostition = Range.clip(servoPostition, servoMinRange, servoMaxRange);
         Servo.setPosition(servoPostition);
 
-        // Send calculated power to wheels
+        // Send calculated power to wheels (There aren't any calculations done, this is pretty much extra at the moment.)
         MotorLeft.setPower(MotorLeftPower);
         MotorRight.setPower(MotorRightPower);
 
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Running, Run Time: " + runtime.toString());
         telemetry.addData("Motors", "Left: (%.2f), Right: (%.2f)", MotorLeftPower, MotorRightPower);
-        telemetry.addData("arm",   "%.2f", servoPostition);
+        telemetry.addData("Servo Position","%.2f", servoPostition); //I'll do some math later to make this in degrees, but I need to make the servos translate to degrees first.
+        telemetry.addData( "Motor Speed","%.2f", motorSpeedMultiplier);
 
 
 
-        sleep(40);
+        sleep(40); //This saves battery by only running opMode 25 times a second.
     }
 
-    /*
-     * Code to run ONCE after the driver hits STOP
-     */
+
     @Override
     public void stop() {
+        //Code to run ONCE after the driver hits STOP
+
         telemetry.addData("Status:", "Stopped");
 
     }
