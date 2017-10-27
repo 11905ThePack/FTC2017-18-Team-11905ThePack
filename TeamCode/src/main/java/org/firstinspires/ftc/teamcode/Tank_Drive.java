@@ -34,19 +34,8 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-/**
- * This file contains an example of an iterative (Non-Linear) "OpMode".
- * An OpMode is a 'program' that runs in either the autonomous or the teleop period of an FTC match.
- * The names of OpModes appear on the menu of the FTC Driver Station.
- * When an selection is made from the menu, the corresponding OpMode
- * class is instantiated on the Robot Controller and executed.
- *
- * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
- * It includes all the skeletal structure that all iterative OpModes contain.
- *
- * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
- */
+import static android.os.SystemClock.sleep;
+
 
 @TeleOp(name="TankDrive", group="Iterative Opmode")
 //@Disabled
@@ -59,7 +48,7 @@ public class Tank_Drive extends OpMode
     public Servo Servo = null;
 
     public final static double servoStop = 0.2;
-    double armPosition  = servoStop;                   // Servo safe position
+    double servoPostition = servoStop;                   // Servo safe position
 
     final double servoSpeed = 0.01 ;
     public final static double servoMinRange  = 0.20;
@@ -135,13 +124,13 @@ public class Tank_Drive extends OpMode
 
         // Use gamepad Y & A set Servo's wariables.
         if (gamepad1.a)
-            servoStop += servoSpeed;
+            servoPostition += servoSpeed;
         else if (gamepad1.y)
-            servoStop -= servoSpeed;
+            servoPostition -= servoSpeed;
 
         // Set Servo to set position.
-        armPosition  = Range.clip(armPosition, robot.servoMinRange, robot.servoMaxRange);
-        robot.arm.setPosition(armPosition);
+        servoPostition = Range.clip(servoPostition, servoMinRange, servoMaxRange);
+        Servo.setPosition(servoPostition);
 
         // Send calculated power to wheels
         MotorLeft.setPower(MotorLeftPower);
@@ -150,6 +139,11 @@ public class Tank_Drive extends OpMode
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Running, Run Time: " + runtime.toString());
         telemetry.addData("Motors", "Left: (%.2f), Right: (%.2f)", MotorLeftPower, MotorRightPower);
+        telemetry.addData("arm",   "%.2f", servoPostition);
+
+
+
+        sleep(40);
     }
 
     /*
