@@ -32,6 +32,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 /**
  * This file contains an example of an iterative (Non-Linear) "OpMode".
@@ -58,7 +59,11 @@ public class Tank_Drive extends OpMode
     public Servo Servo = null;
 
     public final static double servoStop = 0.2;
+    double armPosition  = servoStop;                   // Servo safe position
 
+    final double servoSpeed = 0.01 ;
+    public final static double servoMinRange  = 0.20;
+    public final static double servoMaxRange  = 0.90;
 
     /*
      * Code to run ONCE when the driver hits INIT
@@ -73,6 +78,7 @@ public class Tank_Drive extends OpMode
         MotorLeft = hardwareMap.get(DcMotor.class, "MotorLeft");
         MotorRight = hardwareMap.get(DcMotor.class, "MotorRight");
         Servo = hardwareMap.get(Servo.class, "Servo");
+
 
 
         // Most robots need the motor on one side to be reversed to drive forward
@@ -124,6 +130,18 @@ public class Tank_Drive extends OpMode
         // - This requires no math, but it is hard to drive forward slowly and keep straight.
          MotorLeftPower  = -gamepad1.left_stick_y ;
          MotorRightPower = -gamepad1.right_stick_y ;
+
+
+
+        // Use gamepad Y & A set Servo's wariables.
+        if (gamepad1.a)
+            servoStop += servoSpeed;
+        else if (gamepad1.y)
+            servoStop -= servoSpeed;
+
+        // Set Servo to set position.
+        armPosition  = Range.clip(armPosition, robot.servoMinRange, robot.servoMaxRange);
+        robot.arm.setPosition(armPosition);
 
         // Send calculated power to wheels
         MotorLeft.setPower(MotorLeftPower);
