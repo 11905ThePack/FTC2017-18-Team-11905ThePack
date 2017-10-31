@@ -100,7 +100,7 @@ public class Tank_Drive extends OpMode
     public void loop() {
         //Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
 
-        // Setup a variable for each drive wheel to save power level for telemetry
+        // Setup a variable for each drive wheel and servos to save power level for telemetry.
         double MotorLeftPower;
         double MotorRightPower;
         double servoSpeed = 1.8;
@@ -143,11 +143,12 @@ public class Tank_Drive extends OpMode
         telemetry.addData("Status", "Running, Run Time: " + runtime.toString());
         telemetry.addData("Motors", "Left: (%.2f), Right: (%.2f)", MotorLeftPower, MotorRightPower);
         telemetry.addData("Servo Position (Degrees)","%.2f", servoPostition);
+        telemetry.addData( "Servo Speed (Degrees/Tick","%.2f", servoSpeed);
         telemetry.addData( "Motor Speed","%.2f", motorSpeedMultiplier);
 
 
 
-        sleep(40); //This saves battery by only running opMode 25 times a second.
+        sleep(50); //This saves battery by only running opMode 20 times a second. This is one Minecraft tick.
     }
 
 
