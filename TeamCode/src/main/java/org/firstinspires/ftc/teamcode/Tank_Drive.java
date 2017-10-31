@@ -48,7 +48,7 @@ public class Tank_Drive extends OpMode
     private DcMotor MotorRight = null;
     private Servo Servo = null;
 
-    private DcMotor motorSpeedMultiplier = null ;
+    private static double motorSpeedMultiplier = 1;
 
     private final static double servoStop = 1;
     private double servoPostition = servoStop ;  // Servo safe position
@@ -116,16 +116,19 @@ public class Tank_Drive extends OpMode
         //MotorRightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
 
         // Tank Mode uses one stick to control each wheel.
-        // - This requires no math, but it is hard to drive forward slowly and keep straight. (I'm going to add my patented [not patented] motor power scaling here.)
-         MotorLeftPower  = -gamepad1.left_stick_y ;
-         MotorRightPower = -gamepad1.right_stick_y ;
+         MotorLeftPower  = -gamepad1.left_stick_y * motorSpeedMultiplier;
+         MotorRightPower = -gamepad1.right_stick_y * motorSpeedMultiplier ;
 
-
-
-        // Use gamepad Y & A set Servo's variables.
+        //MotorSpeed High/Low This is on controller one.
         if (gamepad1.a)
+            motorSpeedMultiplier = 1;
+        else if (gamepad1.b)
+            motorSpeedMultiplier = .2; //20% Speed
+
+        // Use gamepad Y & A set Servo's variables. This is on controller two.
+        if (gamepad2.a)
             servoPostition += servoSpeed;
-        else if (gamepad1.y)
+        else if (gamepad2.y)
             servoPostition -= servoSpeed;
 
         // Set Servo position to variable "servoPosition"
