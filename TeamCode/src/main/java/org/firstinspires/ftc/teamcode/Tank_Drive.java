@@ -53,7 +53,6 @@ public class Tank_Drive extends OpMode
     private final static double servoStop = 1;
     private double servoPostition = servoStop ;  // Servo safe position
 
-    private final double servoSpeed = 1.8;
     private final static double servoMinRange  = 15;
     private final static double servoMaxRange  = 180;
 
@@ -101,9 +100,10 @@ public class Tank_Drive extends OpMode
     public void loop() {
         //Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
 
-        // Setup a variable for each drive wheel to save power level for telemetry (I may move these to init; not sure yet.)
+        // Setup a variable for each drive wheel to save power level for telemetry
         double MotorLeftPower;
         double MotorRightPower;
+        double servoSpeed = 1.8;
 
         // Choose to drive using either Tank Mode, or POV Mode
         // Comment out the method that's not used.  The default below is POV.
