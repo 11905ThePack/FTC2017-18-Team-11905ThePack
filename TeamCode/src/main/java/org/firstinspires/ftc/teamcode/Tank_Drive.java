@@ -52,9 +52,10 @@ public class Tank_Drive extends OpMode
 
     private final static double servoStop = 1;
     private double servoPostition = servoStop ;  // Servo safe position
-
     private final static double servoMinRange  = 15;
     private final static double servoMaxRange  = 180;
+
+    private String consoleOut = "Nothing Yet";
 
 
     @Override
@@ -103,7 +104,7 @@ public class Tank_Drive extends OpMode
         // Setup a variable for each drive wheel and servos to save power level for telemetry.
         double MotorLeftPower;
         double MotorRightPower;
-        double servoSpeed = 1.8;
+        double servoSpeed = 1.8; //This is in Degrees/Tick
 
         // Choose to drive using either Tank Mode, or POV Mode
         // Comment out the method that's not used.  The default below is POV.
@@ -145,6 +146,7 @@ public class Tank_Drive extends OpMode
         telemetry.addData("Servo Position (Degrees)","%.2f", servoPostition);
         telemetry.addData( "Servo Speed (Degrees/Tick","%.2f", servoSpeed);
         telemetry.addData( "Motor Speed","%.2f", motorSpeedMultiplier);
+        telemetry.addData( "Console Out", consoleOut);
 
 
 
