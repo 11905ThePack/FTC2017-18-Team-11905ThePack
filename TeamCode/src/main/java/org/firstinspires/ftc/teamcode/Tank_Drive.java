@@ -51,7 +51,7 @@ public class Tank_Drive extends OpMode
     private static double motorSpeedMultiplier = 1;
 
     private final static double servoStop = 1;
-    private double servoPostition = servoStop ;  // Servo safe position
+    private double servoPosition = servoStop ;  // Servo safe position
     private final static double servoMinRange  = 15;
     private final static double servoMaxRange  = 180;
 
@@ -128,13 +128,13 @@ public class Tank_Drive extends OpMode
 
         // Use gamepad Y & A set Servo's variables. This is on controller two.
         if (gamepad2.a)
-            servoPostition += servoSpeed;
+            servoPosition += servoSpeed;
         else if (gamepad2.y)
-            servoPostition -= servoSpeed;
+            servoPosition -= servoSpeed;
 
         // Set Servo position to variable "servoPosition"
-        servoPostition = Range.clip(servoPostition, servoMinRange, servoMaxRange);
-        Servo.setPosition(servoPostition / 180); //This converts from degrees into 0-1 automagically.
+        servoPosition = Range.clip(servoPosition, servoMinRange, servoMaxRange);
+        Servo.setPosition(servoPosition / 180); //This converts from degrees into 0-1 automagically.
 
         // Send calculated power to wheels (There aren't any calculations done, this is pretty much extra at the moment.)
         MotorLeft.setPower(MotorLeftPower);
@@ -143,7 +143,7 @@ public class Tank_Drive extends OpMode
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Running, Run Time: " + runtime.toString());
         telemetry.addData("Motors", "Left: (%.2f), Right: (%.2f)", MotorLeftPower, MotorRightPower);
-        telemetry.addData("Servo Position (Degrees)","%.2f", servoPostition);
+        telemetry.addData("Servo Position (Degrees)","%.2f", servoPosition);
         telemetry.addData( "Servo Speed (Degrees/Tick","%.2f", servoSpeed);
         telemetry.addData( "Motor Speed","%.2f", motorSpeedMultiplier);
         telemetry.addData( "Console Out", consoleOut);
