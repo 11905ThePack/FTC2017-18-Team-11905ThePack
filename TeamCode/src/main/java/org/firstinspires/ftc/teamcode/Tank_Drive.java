@@ -46,7 +46,8 @@ public class Tank_Drive extends OpMode
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor MotorLeft = null;
     private DcMotor MotorRight = null;
-    private Servo Servo = null;
+    private Servo ServoLeft = null;
+    private Servo ServoRight = null;
 
     private static double motorSpeedMultiplier = 1;
 
@@ -69,7 +70,8 @@ public class Tank_Drive extends OpMode
         // step (using the FTC Robot Controller app on the phone).
         MotorLeft = hardwareMap.get(DcMotor.class, "MotorLeft");
         MotorRight = hardwareMap.get(DcMotor.class, "MotorRight");
-        Servo = hardwareMap.get(Servo.class, "Servo");
+        ServoLeft = hardwareMap.get(Servo.class, "ServoLeft");
+        ServoRight = hardwareMap.get(Servo.class, "ServoRight");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
