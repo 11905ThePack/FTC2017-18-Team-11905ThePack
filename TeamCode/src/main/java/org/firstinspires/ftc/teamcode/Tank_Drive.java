@@ -52,7 +52,8 @@ public class Tank_Drive extends OpMode
     private static double motorSpeedMultiplier = 1;
 
     private final static double servoStop = 1;
-    private double servoPosition = servoStop ;  // Servo safe position
+    private double servoLeftPosition = servoStop ;  // Servo safe position
+    private double servoRightPosition = servoStop;
     private final static double servoMinRange  = 15;
     private final static double servoMaxRange  = 180;
 
@@ -130,13 +131,16 @@ public class Tank_Drive extends OpMode
 
         // Use gamepad Y & A set Servo's variables. This is on controller two.
         if (gamepad2.a)
-            servoPosition += servoSpeed;
-        else if (gamepad2.y)
-            servoPosition -= servoSpeed;
-
+            servoLeftPosition = 30;
+            servoRightPosition = 30;
+        if (gamepad2.y)
+            servoLeftPosition = 70;
+            servoRightPosition = 70;
         // Set Servo position to variable "servoPosition"
-        servoPosition = Range.clip(servoPosition, servoMinRange, servoMaxRange);
-        Servo.setPosition(servoPosition / 180); //This converts from degrees into 0-1 automagically.
+        servoLeftPosition = Range.clip(servoLeftPosition, servoMinRange, servoMaxRange);
+        ServoLeft.setPosition(servoLeftPosition / 180); //This converts from degrees into 0-1 automagically.
+        servoRightPosition = Range.clip(servoRightPosition, servoMinRange, servoMaxRange);
+        ServoRight.setPosition(servoRightPosition / 180); //This converts from degrees into 0-1 automagically.
 
         // Send calculated power to wheels (There aren't any calculations done, this is pretty much extra at the moment.)
         MotorLeft.setPower(MotorLeftPower);
@@ -145,7 +149,7 @@ public class Tank_Drive extends OpMode
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Running, Run Time: " + runtime.toString());
         telemetry.addData("Motors", "Left: (%.2f), Right: (%.2f)", MotorLeftPower, MotorRightPower);
-        telemetry.addData("Servo Position (Degrees)","%.2f", servoPosition);
+        telemetry.addData("Servo Positions (Degrees)","%.2f", servoLeftPosition, servoRightPosition);
         telemetry.addData( "Servo Speed (Degrees/Tick","%.2f", servoSpeed);
         telemetry.addData( "Motor Speed","%.2f", motorSpeedMultiplier);
         telemetry.addData( "Console Out", consoleOut);
