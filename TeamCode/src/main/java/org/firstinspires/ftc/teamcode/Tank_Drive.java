@@ -51,10 +51,10 @@ public class Tank_Drive extends OpMode
 
     private static double motorSpeedMultiplier = 1;
 
-    private final static double servoStop = 1;
+    private final static double servoStop = 30;
     private double servoLeftPosition = servoStop ;  // Servo safe position
-    private double servoRightPosition = servoStop;
-    private final static double servoMinRange  = 15;
+    private double servoRightPosition = servoStop;  //Servo safe position
+    private final static double servoMinRange  = 1;
     private final static double servoMaxRange  = 180;
 
     private String consoleOut = "Nothing Yet";
@@ -130,12 +130,14 @@ public class Tank_Drive extends OpMode
             motorSpeedMultiplier = .2; //20% Speed
 
         // Use gamepad Y & A set Servo's variables. This is on controller two.
-        if (gamepad2.a)
-            servoLeftPosition = 30;
-            servoRightPosition = 30;
-        if (gamepad2.y)
-            servoLeftPosition = 70;
-            servoRightPosition = 70;
+        if (gamepad2.a) {
+            servoLeftPosition = 10;
+            servoRightPosition = 10;
+        }
+        if (gamepad2.y) {
+            servoLeftPosition = 150;
+            servoRightPosition = 150;
+        }
         // Set Servo position to variable "servoPosition"
         servoLeftPosition = Range.clip(servoLeftPosition, servoMinRange, servoMaxRange);
         ServoLeft.setPosition(servoLeftPosition / 180); //This converts from degrees into 0-1 automagically.
@@ -150,7 +152,6 @@ public class Tank_Drive extends OpMode
         telemetry.addData("Status", "Running, Run Time: " + runtime.toString());
         telemetry.addData("Motors", "Left: (%.2f), Right: (%.2f)", MotorLeftPower, MotorRightPower);
         telemetry.addData("Servo Positions (Degrees)","%.2f", servoLeftPosition, servoRightPosition);
-        telemetry.addData( "Servo Speed (Degrees/Tick","%.2f", servoSpeed);
         telemetry.addData( "Motor Speed","%.2f", motorSpeedMultiplier);
         telemetry.addData( "Console Out", consoleOut);
 
