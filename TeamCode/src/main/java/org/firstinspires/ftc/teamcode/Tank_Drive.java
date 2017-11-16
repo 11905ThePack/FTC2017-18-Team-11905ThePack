@@ -55,7 +55,7 @@ public class Tank_Drive extends OpMode
 
     private double servoGlyphLeftPosition = 180 ;  // Servo safe position
     private double servoGlyphRightPosition = 0;  //Servo safe position
-    private final static double servoMinRange  = 1;
+    private final static double servoMinRange  = 1; //These should probably be removed at some point.
     private final static double servoMaxRange  = 180;
 
     private String consoleOut = "Nothing Yet";
@@ -76,7 +76,7 @@ public class Tank_Drive extends OpMode
         GlyphServoRight = hardwareMap.get(Servo.class, "GlyphServoRight");
 
         // Most robots need the motor on one side to be reversed to drive forward
-        // Reverse the motor that runs backwards when connected directly to the battery
+        // Reverse the motor t//hat runs backwards when connected directly to the battery
         DriveMotorLeft.setDirection(DcMotor.Direction.FORWARD);
         DriveMotorRight.setDirection(DcMotor.Direction.REVERSE);
 
