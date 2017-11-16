@@ -43,17 +43,18 @@ public class Tank_Drive extends OpMode
 {
     // Declare OpMode variables for use.
     //All servo variables are in DEGREES.
+    //As a general rule, use uppercase first letters for hardware mapping,
+    //and use lowercase first letters for variables.
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor MotorLeft = null;
     private DcMotor MotorRight = null;
-    private Servo ServoLeft = null;
-    private Servo ServoRight = null;
+    private Servo GlyphServoLeft = null; //Left half of glyph grabber
+    private Servo GlyphServoRight = null; //Right half of glyph grabber
 
     private static double motorSpeedMultiplier = 1;
 
-    private final static double servoStop = 30;
-    private double servoLeftPosition = servoStop ;  // Servo safe position
-    private double servoRightPosition = servoStop;  //Servo safe position
+    private double servoGlyphLeftPosition = 180 ;  // Servo safe position
+    private double servoGlyphRightPosition = 0;  //Servo safe position
     private final static double servoMinRange  = 1;
     private final static double servoMaxRange  = 180;
 
@@ -71,8 +72,8 @@ public class Tank_Drive extends OpMode
         // step (using the FTC Robot Controller app on the phone).
         MotorLeft = hardwareMap.get(DcMotor.class, "MotorLeft");
         MotorRight = hardwareMap.get(DcMotor.class, "MotorRight");
-        ServoLeft = hardwareMap.get(Servo.class, "ServoLeft");
-        ServoRight = hardwareMap.get(Servo.class, "ServoRight");
+        GlyphServoLeft = hardwareMap.get(Servo.class, "GlyphServoLeft");
+        GlyphServoRight = hardwareMap.get(Servo.class, "GlyphServoRight");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -107,7 +108,6 @@ public class Tank_Drive extends OpMode
         // Setup a variable for each drive wheel and servos to save power level for telemetry.
         double MotorLeftPower;
         double MotorRightPower;
-        double servoSpeed = 1.8; //This is in Degrees/Tick
 
         // Choose to drive using either Tank Mode, or POV Mode
         // Comment out the method that's not used.  The default below is POV.
@@ -131,18 +131,18 @@ public class Tank_Drive extends OpMode
 
         // Use gamepad Y & A set Servo's variables. This is on controller two.
         if (gamepad2.a) {
-            servoLeftPosition = 10;
-            servoRightPosition = 10;
+            servoGlyphLeftPosition = 10;
+            servoGlyphRightPosition = 150;
         }
         if (gamepad2.y) {
-            servoLeftPosition = 150;
-            servoRightPosition = 150;
+            servoGlyphLeftPosition = 150;
+            servoGlyphRightPosition = 10;
         }
         // Set Servo position to variable "servoPosition"
-        servoLeftPosition = Range.clip(servoLeftPosition, servoMinRange, servoMaxRange);
-        ServoLeft.setPosition(servoLeftPosition / 180); //This converts from degrees into 0-1 automagically.
-        servoRightPosition = Range.clip(servoRightPosition, servoMinRange, servoMaxRange);
-        ServoRight.setPosition(servoRightPosition / 180); //This converts from degrees into 0-1 automagically.
+        servoGlyphLeftPosition = Range.clip(servoGlyphLeftPosition, servoMinRange, servoMaxRange); //Clips servo range into usable area. Protects from over extension.
+        GlyphServoLeft.setPosition(servoGlyphLeftPosition / 180); //This converts from degrees into 0-1 automagically.
+        servoGlyphRightPosition = Range.clip(servoGlyphRightPosition, servoMinRange, servoMaxRange);//Clips servo range into usable area. Protects from over extension.
+        GlyphServoRight.setPosition(servoGlyphRightPosition / 180); //This converts from degrees into 0-1 automagically.
 
         // Send calculated power to wheels (There aren't any calculations done, this is pretty much extra at the moment.)
         MotorLeft.setPower(MotorLeftPower);
@@ -151,7 +151,7 @@ public class Tank_Drive extends OpMode
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Running, Run Time: " + runtime.toString());
         telemetry.addData("Motors", "Left: (%.2f), Right: (%.2f)", MotorLeftPower, MotorRightPower);
-        telemetry.addData("Servo Positions (Degrees)","%.2f", servoLeftPosition, servoRightPosition);
+//        telemetry.addData("Servo Positions (Degrees)","%.2f", servoGlyphLeftPosition, servoGlyphRightPosition); (This is temporarily broken, but we'll fix it)
         telemetry.addData( "Motor Speed","%.2f", motorSpeedMultiplier);
         telemetry.addData( "Console Out", consoleOut);
 
