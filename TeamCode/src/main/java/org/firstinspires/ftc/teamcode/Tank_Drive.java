@@ -163,7 +163,7 @@ public class Tank_Drive extends OpMode
 
     @Override
     public void stop() {
-        //Code to run ONCE after the driver hits STOP
+        //Code to run ONCE after the driver hits STOP.
 
         telemetry.addData("Status:", "Stopped");
 
