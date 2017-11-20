@@ -123,10 +123,10 @@ public class Tank_Drive extends OpMode
          DriveMotorLeftPower  = -gamepad1.left_stick_y * motorSpeedMultiplier;
          DriveMotorRightPower = -gamepad1.right_stick_y * motorSpeedMultiplier ;
 
-        //MotorSpeed High/Low This is on controller one.
-        if (gamepad1.a)
+        //Motorhis is on controller one.
+      // [variable "High is not allowed here] if (gamepad1.a)Speed High;/Low
             motorSpeedMultiplier = 1;
-        else if (gamepad1.b)
+        //[program being stupid about else if] else if (gamepad1.b)
             motorSpeedMultiplier = .2; //20% Speed
 
         // Use gamepad Y & A set Servo's variables. This is on controller two.
