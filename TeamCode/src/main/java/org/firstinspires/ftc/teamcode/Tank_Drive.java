@@ -19,21 +19,21 @@ public class Tank_Drive extends OpMode
     //As a general rule, use uppercase first letters for hardware mapping,
     //and use lowercase first letters for variables.
     private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor DriveMotorLeft = null;
-    private DcMotor DriveMotorRight = null;
-    private Servo GlyphServoLeft = null; //Left half of glyph grabber
-    private Servo GlyphServoRight = null; //Right half of glyph grabber
-    private Servo RelicServoFront = null; //Front half of the Relic Grabber
-    private Servo RelicServoBack = null; //Back half of the Relic Grabber
+    private DcMotor DriveMotorLeft = null;//Left Motor
+    private DcMotor DriveMotorRight = null;//Right Motor
+    private Servo GlyphServoLeft = null;//Left half of glyph grabber
+    private Servo GlyphServoRight = null;//Right half of glyph grabber
+    private Servo RelicServoFront = null;//Front half of the Relic Grabber
+    private Servo RelicServoBack = null;//Back half of the Relic Grabber
 
     private static double motorSpeedMultiplier = 1;
 
-    private double servoGlyphLeftPosition = 180 ;  // Servo safe position
-    private double servoGlyphRightPosition = 0;  //Servo safe position
-    private double RelicServoFrontPosition = 0;
-    private double RelicServoBackPosition = 0;
-    private final static double servoMinRange  = 1; //These should probably be removed at some point.
-    private final static double servoMaxRange  = 180;
+    private double servoGlyphLeftPosition = 180 ; // Servo safe position
+    private double servoGlyphRightPosition = 0; //Servo safe position
+    private double servoRelicServoFrontPosition = 0;
+    private double servoRelicServoBackPosition = 0;
+    //private final static double servoMinRange  = 1;
+    //private final static double servoMaxRange  = 180;
 
     private String consoleOut = "Nothing Yet";
 
@@ -53,8 +53,7 @@ public class Tank_Drive extends OpMode
         GlyphServoRight = hardwareMap.get(Servo.class, "GlyphServoRight");
         RelicServoFront = hardwareMap.get(Servo.class, "RelicServoFront");
         RelicServoBack = hardwareMap.get(Servo.class, "RelicServoBack");
-        // Most robots need the motor on one side to be reversed to drive forward
-        // Reverse the motor t//hat runs backwards when connected directly to the battery
+
         DriveMotorLeft.setDirection(DcMotor.Direction.FORWARD);
         DriveMotorRight.setDirection(DcMotor.Direction.REVERSE);
 
@@ -65,7 +64,7 @@ public class Tank_Drive extends OpMode
 
     @Override
     public void init_loop() {
-        //Code to run REPEATEDLY after the driver hits INIT, but before they hit PLAY
+        //Code loops once you hit init.
 
         telemetry.addData("Status:", "Armed");
 
@@ -90,20 +89,18 @@ public class Tank_Drive extends OpMode
         // Choose to drive using either Tank Mode, or POV Mode
         // Comment out the method that's not used.  The default below is POV.
 
-        // POV Mode uses left stick to go forward, and right stick to turn.
-        // - This uses basic math to combine motions and is easier to drive straight.
-        //double drive = -gamepad1.left_stick_y;
-        //double turn  =  gamepad1.right_stick_x;
-        //DriveMotorLeftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
-        //DriveMotorRightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
+            // POV Mode uses left stick to go forward, and right stick to turn.
+            // - This uses basic math to combine motions and is easier to drive straight.
+            //double drive = -gamepad1.left_stick_y;
+            //double turn  =  gamepad1.right_stick_x;
+            //DriveMotorLeftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
+            // DriveMotorRightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
 
-        // Tank Mode uses one stick to control each wheel.
+        // Tank Mode uses one stick to control each wheel. This is on Controller One
          DriveMotorLeftPower  = -gamepad1.left_stick_y * motorSpeedMultiplier;
          DriveMotorRightPower = -gamepad1.right_stick_y * motorSpeedMultiplier ;
 
-        //Motor is is on controller one.
-
-        // Use gamepad Y & A set Servo's variables. This is on controller two.
+        // Use gamepad Y & A to set Servo's variables. This is on Controller Two.
         if (gamepad2.a) {
             servoGlyphLeftPosition = 10;
             servoGlyphRightPosition = 150;
@@ -114,20 +111,31 @@ public class Tank_Drive extends OpMode
 
         }
 
+        // Use gamepad X & B to set Servo's Variables. This is on Controller Two.
         if (gamepad2.x) {
-            RelicServoFrontPosition = 160;
-            RelicServoBackPosition = 15;
+            servoRelicServoFrontPosition = 160;
+            servoRelicServoBackPosition = 15;
         }
 
         if (gamepad2.b) {
-            RelicServoBackPosition = 15;
-            RelicServoFrontPosition = 160;
+            servoRelicServoBackPosition = 15;
+            servoRelicServoFrontPosition = 160;
         }
         // Set Servo position to variable "servoPosition"
         servoGlyphLeftPosition = Range.clip(servoGlyphLeftPosition, servoMinRange, servoMaxRange); //Clips servo range into usable area. Protects from over extension.
         GlyphServoLeft.setPosition(servoGlyphLeftPosition / 180); //This converts from degrees into 0-1 automagically.
-        servoGlyphRightPosition = Range.clip(servoGlyphRightPosition, servoMinRange, servoMaxRange);//Clips servo range into usable area. Protects from over extension.
-        GlyphServoRight.setPosition(servoGlyphRightPosition / 180);//This converts from degrees into 0-1 automagically.
+
+        servoGlyphRightPosition = Range.clip(servoGlyphRightPosition, servoMinRange, servoMaxRange);
+        GlyphServoRight.setPosition(servoGlyphRightPosition / 180);
+
+        servoRelicServoFrontPosition = Range.clip(servoRelicServoFrontPosition, servoMinRange, servoMaxRange);
+        RelicServoFront.setPosition(servoRelicServoFrontPosition / 180);
+
+        servoRelicServoBackPosition = Range.clip(servoRelicServoBackPosition, servoMinRange, servoMaxRange);
+        RelicServoBack.setPosition(servoRelicServoBackPosition / 180);
+
+
+
 
         // Send calculated power to wheels (There aren't any calculations done, this is pretty much extra at the moment.)
         DriveMotorLeft.setPower(DriveMotorLeftPower);
@@ -136,7 +144,7 @@ public class Tank_Drive extends OpMode
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Running, Run Time: " + runtime.toString());
         telemetry.addData("Motors", "Left: (%.2f), Right: (%.2f)", DriveMotorLeftPower, DriveMotorRightPower);
-//        telemetry.addData("Servo Positions (Degrees)","%.2f", servoGlyphLeftPosition, servoGlyphRightPosition); (This is temporarily broken, but we'll fix it)
+        //telemetry.addData("Servo Positions (Degrees)","%.2f", servoGlyphLeftPosition, servoGlyphRightPosition); (This is temporarily broken, but we'll fix it)
         telemetry.addData( "Motor Speed","%.2f", motorSpeedMultiplier);
         telemetry.addData( "Console Out", consoleOut);
 
