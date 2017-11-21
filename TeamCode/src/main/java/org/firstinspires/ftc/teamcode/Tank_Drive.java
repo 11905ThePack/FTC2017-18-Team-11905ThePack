@@ -1,31 +1,4 @@
-package org.firstinspires.ftc.teamcode;/* Copyright (c) 2017 FIRST. All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without modification,
- * are permitted (subject to the limitations in the disclaimer below) provided that
- * the following conditions are met:
- *
- * Redistributions of source code must retain the above copyright notice, this list
- * of conditions and the following disclaimer.
- *
- * Redistributions in binary form must reproduce the above copyright notice, this
- * list of conditions and the following disclaimer in the documentation and/or
- * other materials provided with the distribution.
- *
- * Neither the name of FIRST nor the names of its contributors may be used to endorse or
- * promote products derived from this software without specific prior written permission.
- *
- * NO EXPRESS OR IMPLIED LICENSES TO ANY PARTY'S PATENT RIGHTS ARE GRANTED BY THIS
- * LICENSE. THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
- * "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
- * THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
- * SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
- * CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
- * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
- * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- */
+package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -34,11 +7,11 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-import static android.os.SystemClock.sleep;
+//import static android.os.SystemClock.sleep;
 
 
 @TeleOp(name="TankDrive", group="Drive-Type OpModes")
-//@Disabled
+
 public class Tank_Drive extends OpMode
 {
     // Declare OpMode variables for use.
@@ -50,11 +23,15 @@ public class Tank_Drive extends OpMode
     private DcMotor DriveMotorRight = null;
     private Servo GlyphServoLeft = null; //Left half of glyph grabber
     private Servo GlyphServoRight = null; //Right half of glyph grabber
+    private Servo RelicServoFront = null; //Front half of the Relic Grabber
+    private Servo RelicServoBack = null; //Back half of the Relic Grabber
 
     private static double motorSpeedMultiplier = 1;
 
     private double servoGlyphLeftPosition = 180 ;  // Servo safe position
     private double servoGlyphRightPosition = 0;  //Servo safe position
+    private double RelicServoFrontPosition = 0;
+    private double RelicServoBackPosition = 0;
     private final static double servoMinRange  = 1; //These should probably be removed at some point.
     private final static double servoMaxRange  = 180;
 
@@ -74,7 +51,8 @@ public class Tank_Drive extends OpMode
         DriveMotorRight = hardwareMap.get(DcMotor.class, "DriveMotorRight");
         GlyphServoLeft = hardwareMap.get(Servo.class, "GlyphServoLeft");
         GlyphServoRight = hardwareMap.get(Servo.class, "GlyphServoRight");
-
+        RelicServoFront = hardwareMap.get(Servo.class, "RelicServoFront");
+        RelicServoBack = hardwareMap.get(Servo.class, "RelicServoBack");
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor t//hat runs backwards when connected directly to the battery
         DriveMotorLeft.setDirection(DcMotor.Direction.FORWARD);
@@ -123,11 +101,7 @@ public class Tank_Drive extends OpMode
          DriveMotorLeftPower  = -gamepad1.left_stick_y * motorSpeedMultiplier;
          DriveMotorRightPower = -gamepad1.right_stick_y * motorSpeedMultiplier ;
 
-        //Motorhis is on controller one.
-      // [variable "High is not allowed here] if (gamepad1.a)Speed High;/Low
-            motorSpeedMultiplier = 1;
-        //[program being stupid about else if] else if (gamepad1.b)
-            motorSpeedMultiplier = .2; //20% Speed
+        //Motor is is on controller one.
 
         // Use gamepad Y & A set Servo's variables. This is on controller two.
         if (gamepad2.a) {
@@ -137,12 +111,23 @@ public class Tank_Drive extends OpMode
         if (gamepad2.y) {
             servoGlyphLeftPosition = 150;
             servoGlyphRightPosition = 10;
+
+        }
+
+        if (gamepad2.x) {
+            RelicServoFrontPosition = 160;
+            RelicServoBackPosition = 15;
+        }
+
+        if (gamepad2.b) {
+            RelicServoBackPosition = 15;
+            RelicServoFrontPosition = 160;
         }
         // Set Servo position to variable "servoPosition"
         servoGlyphLeftPosition = Range.clip(servoGlyphLeftPosition, servoMinRange, servoMaxRange); //Clips servo range into usable area. Protects from over extension.
         GlyphServoLeft.setPosition(servoGlyphLeftPosition / 180); //This converts from degrees into 0-1 automagically.
         servoGlyphRightPosition = Range.clip(servoGlyphRightPosition, servoMinRange, servoMaxRange);//Clips servo range into usable area. Protects from over extension.
-        GlyphServoRight.setPosition(servoGlyphRightPosition / 180); //This converts from degrees into 0-1 automagically.
+        GlyphServoRight.setPosition(servoGlyphRightPosition / 180);//This converts from degrees into 0-1 automagically.
 
         // Send calculated power to wheels (There aren't any calculations done, this is pretty much extra at the moment.)
         DriveMotorLeft.setPower(DriveMotorLeftPower);
@@ -155,9 +140,7 @@ public class Tank_Drive extends OpMode
         telemetry.addData( "Motor Speed","%.2f", motorSpeedMultiplier);
         telemetry.addData( "Console Out", consoleOut);
 
-
-
-        sleep(50); //This saves battery by only running opMode 20 times a second. This is one Minecraft tick.
+        //sleep(50); //This saves battery by only running opMode 20 times a second. This is one Minecraft tick.
     }
 
 
