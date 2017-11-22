@@ -31,7 +31,7 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-@Autonomous(name="Test_Autonomous",group=Autonomous)
+//@Autonomous(name="Test_Autonomous",group=Autonomous)
 
 public class Test_Autonomous {
 }

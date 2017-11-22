@@ -27,9 +27,10 @@ public class Tank_Drive extends OpMode
     private Servo RelicServoBack = null;//Back half of the Relic Grabber
 
 
-
-    private double servoGlyphLeftPosition = 180 ; // Servo safe position
-    private double servoGlyphRightPosition = 0; //Servo safe position
+    //These outline the starting positions of all of the servos, as well as the range they're allowed to work in.
+    //This is in degrees.
+    private double servoGlyphLeftPosition = 180 ;
+    private double servoGlyphRightPosition = 0;
     private double servoRelicServoFrontPosition = 0;
     private double servoRelicServoBackPosition = 0;
     private final static double servoMinRange  = 1;
