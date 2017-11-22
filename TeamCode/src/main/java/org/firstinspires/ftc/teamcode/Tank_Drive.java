@@ -26,7 +26,7 @@ public class Tank_Drive extends OpMode
     private Servo RelicServoFront = null;//Front half of the Relic Grabber
     private Servo RelicServoBack = null;//Back half of the Relic Grabber
 
-    private static double motorSpeedMultiplier = 1;
+
 
     private double servoGlyphLeftPosition = 180 ; // Servo safe position
     private double servoGlyphRightPosition = 0; //Servo safe position
@@ -34,9 +34,6 @@ public class Tank_Drive extends OpMode
     private double servoRelicServoBackPosition = 0;
     private final static double servoMinRange  = 1;
     private final static double servoMaxRange  = 180;
-
-    private String consoleOut = "Nothing Yet";
-
 
     @Override
     public void init() {
@@ -86,17 +83,12 @@ public class Tank_Drive extends OpMode
         double DriveMotorLeftPower;
         double DriveMotorRightPower;
 
-        // Choose to drive using either Tank Mode, or POV Mode
-        // Comment out the method that's not used.  The default below is POV.
+        // Init some local variables.
+        double motorSpeedMultiplier = 1;
+        String consoleOut = "Nothing Yet";
 
-            // POV Mode uses left stick to go forward, and right stick to turn.
-            // - This uses basic math to combine motions and is easier to drive straight.
-            //double drive = -gamepad1.left_stick_y;
-            //double turn  =  gamepad1.right_stick_x;
-            //DriveMotorLeftPower    = Range.clip(drive + turn, -1.0, 1.0) ;
-            // DriveMotorRightPower   = Range.clip(drive - turn, -1.0, 1.0) ;
 
-        // Tank Mode uses one stick to control each wheel. This is on Controller One
+        // Tank Mode uses one stick to control each wheel. This is on Controller One.
          DriveMotorLeftPower  = -gamepad1.left_stick_y * motorSpeedMultiplier;
          DriveMotorRightPower = -gamepad1.right_stick_y * motorSpeedMultiplier ;
 
