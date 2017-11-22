@@ -32,8 +32,8 @@ public class Tank_Drive extends OpMode
     private double servoGlyphRightPosition = 0; //Servo safe position
     private double servoRelicServoFrontPosition = 0;
     private double servoRelicServoBackPosition = 0;
-    //private final static double servoMinRange  = 1;
-    //private final static double servoMaxRange  = 180;
+    private final static double servoMinRange  = 1;
+    private final static double servoMaxRange  = 180;
 
     private String consoleOut = "Nothing Yet";
 
