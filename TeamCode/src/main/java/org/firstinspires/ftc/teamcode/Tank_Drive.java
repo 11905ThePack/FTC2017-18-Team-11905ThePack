@@ -18,13 +18,14 @@ public class Tank_Drive extends OpMode
     //All servo variables are in DEGREES.
     //As a general rule, use uppercase first letters for hardware mapping,
     //and use lowercase first letters for variables.
-    private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor DriveMotorLeft = null;//Left Motor
-    private DcMotor DriveMotorRight = null;//Right Motor
-    private Servo GlyphServoLeft = null;//Left half of glyph grabber
-    private Servo GlyphServoRight = null;//Right half of glyph grabber
-    private Servo RelicServoFront = null;//Front half of the Relic Grabber
-    private Servo RelicServoBack = null;//Back half of the Relic Grabber
+    private ElapsedTime runtime = new ElapsedTime(); //We don't really need an elapsedtime telemetry, but here it is.
+    private DcMotor DriveMotorLeft = null; //Left Motor
+    private DcMotor DriveMotorRight = null; //Right Motor
+    private DcMotor MotorRelicExtension = null; //Relic Extension Motor
+    private Servo GlyphServoLeft = null; //Left half of glyph grabber
+    private Servo GlyphServoRight = null; //Right half of glyph grabber
+    private Servo RelicServoFront = null; //Front half of the Relic Grabber
+    private Servo RelicServoBack = null; //Back half of the Relic Grabber
 
 
     //These outline the starting positions of all of the servos, as well as the range they're allowed to work in.
@@ -49,6 +50,8 @@ public class Tank_Drive extends OpMode
         DriveMotorRight = hardwareMap.get(DcMotor.class, "DriveMotorRight");
         GlyphServoLeft = hardwareMap.get(Servo.class, "GlyphServoLeft");
         GlyphServoRight = hardwareMap.get(Servo.class, "GlyphServoRight");
+
+        MotorRelicExtension = hardwareMap.get(DcMotor.class, "MotorRelicExtension");
         RelicServoFront = hardwareMap.get(Servo.class, "RelicServoFront");
         RelicServoBack = hardwareMap.get(Servo.class, "RelicServoBack");
 
@@ -104,6 +107,14 @@ public class Tank_Drive extends OpMode
 
         }
 
+        //Use "Up" on the DPad to trigger the full extension of the relic grabber. (This will later not work if runTime isn't high enough,
+        //because you're not allowed  to move the relic outside of the field until endgame.)
+        if (gamepad1.dpad_up)
+
+
+
+
+
         // Use gamepad X & B to set Servo's Variables. This is on Controller Two.
         if (gamepad2.x) {
             servoRelicServoFrontPosition = 160;
@@ -114,6 +125,7 @@ public class Tank_Drive extends OpMode
             servoRelicServoBackPosition = 15;
             servoRelicServoFrontPosition = 160;
         }
+
         // Set Servo position to variable "servoPosition"
         servoGlyphLeftPosition = Range.clip(servoGlyphLeftPosition, servoMinRange, servoMaxRange); //Clips servo range into usable area. Protects from over extension.
         GlyphServoLeft.setPosition(servoGlyphLeftPosition / 180); //This converts from degrees into 0-1 automagically.
@@ -126,8 +138,6 @@ public class Tank_Drive extends OpMode
 
         servoRelicServoBackPosition = Range.clip(servoRelicServoBackPosition, servoMinRange, servoMaxRange);
         RelicServoBack.setPosition(servoRelicServoBackPosition / 180);
-
-
 
 
         // Send calculated power to wheels (There aren't any calculations done, this is pretty much extra at the moment.)
