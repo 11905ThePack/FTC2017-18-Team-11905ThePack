@@ -21,7 +21,7 @@ public class Tank_Drive extends OpMode
     private ElapsedTime runtime = new ElapsedTime(); //We don't really need an elapsedtime telemetry, but here it is.
     private DcMotor DriveMotorLeft = null; //Left Motor
     private DcMotor DriveMotorRight = null; //Right Motor
-    private DcMotor MotorRelicExtension = null; //Relic Extension Motor
+    //private DcMotor MotorRelicExtension = null; //Relic Extension Motor
     private Servo GlyphServoLeft = null; //Left half of glyph grabber
     private Servo GlyphServoRight = null; //Right half of glyph grabber
     private Servo RelicServoFront = null; //Front half of the Relic Grabber
@@ -32,8 +32,8 @@ public class Tank_Drive extends OpMode
     //This is in degrees.
     private double servoGlyphLeftPosition = 180 ;
     private double servoGlyphRightPosition = 0;
-    private double servoRelicServoFrontPosition = 0;
-    private double servoRelicServoBackPosition = 0;
+    private double servoRelicServoFrontPosition = 45;
+    private double servoRelicServoBackPosition = 80;
     private final static double servoMinRange  = 1;
     private final static double servoMaxRange  = 180;
 
@@ -51,7 +51,7 @@ public class Tank_Drive extends OpMode
         GlyphServoLeft = hardwareMap.get(Servo.class, "GlyphServoLeft");
         GlyphServoRight = hardwareMap.get(Servo.class, "GlyphServoRight");
 
-        MotorRelicExtension = hardwareMap.get(DcMotor.class, "MotorRelicExtension");
+        //MotorRelicExtension = hardwareMap.get(DcMotor.class, "MotorRelicExtension");
         RelicServoFront = hardwareMap.get(Servo.class, "RelicServoFront");
         RelicServoBack = hardwareMap.get(Servo.class, "RelicServoBack");
 
