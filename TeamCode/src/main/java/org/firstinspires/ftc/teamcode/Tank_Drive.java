@@ -110,8 +110,7 @@ public class Tank_Drive extends OpMode
         //Use "Up" on the DPad to trigger the full extension of the relic grabber. (This will later not work if runTime isn't high enough,
         //because you're not allowed  to move the relic outside of the field until endgame.)
         if (gamepad1.dpad_up)
-
-
+            consoleOut = "Extending Relic Grabber To Maximum Length";
 
 
 
