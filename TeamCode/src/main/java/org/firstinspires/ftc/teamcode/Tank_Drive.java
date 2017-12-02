@@ -57,11 +57,11 @@ public class Tank_Drive extends OpMode
         GlyphServoLeft = hardwareMap.get(Servo.class, "GlyphServoLeft");
         GlyphServoRight = hardwareMap.get(Servo.class, "GlyphServoRight");
 
-        RelicServoPitch = hardwareMap.get(Servo.class, "RelicPitch");
+        RelicServoPitch = hardwareMap.get(Servo.class, "RelicServoPitch");
         RelicServoFront = hardwareMap.get(Servo.class, "RelicServoFront");
         RelicServoBack = hardwareMap.get(Servo.class, "RelicServoBack");
 
-        DeviceIM = hardwareMap.get(DeviceInterfaceModule.class, "dim");
+        DeviceIM = hardwareMap.get(DeviceInterfaceModule.class, "DeviceInterfaceModule");
 
 
         // Tell the driver that initialization is complete.
