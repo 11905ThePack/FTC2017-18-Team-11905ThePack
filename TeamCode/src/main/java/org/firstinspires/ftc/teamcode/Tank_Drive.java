@@ -95,16 +95,6 @@ public class Tank_Drive extends OpMode
          DriveMotorLeftPower  = -gamepad1.left_stick_y * motorSpeedMultiplier;
          DriveMotorRightPower = -gamepad1.right_stick_y * motorSpeedMultiplier ;
 
-        // Use gamepad Y & A to set Servo's variables. This is on Controller Two.
-        if (gamepad2.a) {
-            servoGlyphLeftPosition = 10;
-            servoGlyphRightPosition = 150;
-        }
-        if (gamepad2.y) {
-            servoGlyphLeftPosition = 150;
-            servoGlyphRightPosition = 10;
-
-        }
 
         //Use "Up" on the DPad to trigger the full extension of the relic grabber. (This will later not work if runTime isn't high enough,
         //because you're not allowed  to move the relic outside of the field until endgame.)
@@ -112,7 +102,11 @@ public class Tank_Drive extends OpMode
             consoleOut = "Extending Relic Grabber To Maximum Length";
         }
 
+        if (gamepad1.a)
+            motorSpeedMultiplier = 1;
 
+        if (gamepad1.b)
+            motorSpeedMultiplier = .2;
 
         // Use gamepad X & B to set Servo's Variables. This is on Controller Two.
         if (gamepad2.x) {
@@ -124,6 +118,19 @@ public class Tank_Drive extends OpMode
             servoRelicServoBackPosition = 15;
             servoRelicServoFrontPosition = 160;
         }
+
+        // Use gamepad Y & A to set Servo's variables. This is on Controller Two.
+        if (gamepad2.a) {
+            servoGlyphLeftPosition = 80;
+            servoGlyphRightPosition = 100;
+        }
+        if (gamepad2.y) {
+            servoGlyphLeftPosition = 90;
+            servoGlyphRightPosition = 90;
+
+        }
+
+
 
         // Set Servo position to variable "servoPosition"
         servoGlyphLeftPosition = Range.clip(servoGlyphLeftPosition, servoMinRange, servoMaxRange); //Clips servo range into usable area. Protects from over extension.
