@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.util.Range;
 
 //import static android.os.SystemClock.sleep;
 
-
 @TeleOp(name="TankDrive", group="Drive-Type OpModes")
 
 public class Tank_Drive extends OpMode

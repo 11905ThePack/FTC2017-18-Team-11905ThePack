@@ -36,10 +36,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcontroller.external.samples.HardwarePushbot;
-
+@Disabled
 /**
- * This file illustrates the concept of driving a path based on encoder counts.
- * It uses the common Pushbot hardware class to define the drive on the robot.
+ * It uses the common Push * This file illustrates the concept of driving a path based on encoder counts.
+ bot hardware class to define the drive on the robot.
  * The code is structured as a LinearOpMode
  *
  * The code REQUIRES that you DO have encoders on the wheels,
