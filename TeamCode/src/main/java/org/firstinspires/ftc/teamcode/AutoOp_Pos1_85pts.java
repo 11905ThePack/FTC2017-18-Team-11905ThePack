@@ -88,7 +88,8 @@ public class AutoOp_Pos1_85pts extends LinearOpMode {
          * Initialize the drive system variables.
          * The init() method of the hardware class does all the work here
          */
-        robot.init(hardwareMap);
+        DriveMotorLeft = hardwareMap.get(DcMotor.class, "DriveMotorLeft");
+        DriveMotorRight = hardwareMap.get(DcMotor.class, "DriveMotorRight");
 
         // Send telemetry message to signify robot waiting;
         telemetry.addData("Status", "Resetting Encoders");    //
