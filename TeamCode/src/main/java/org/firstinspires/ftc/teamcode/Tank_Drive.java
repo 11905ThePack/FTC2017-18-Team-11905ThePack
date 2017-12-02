@@ -70,7 +70,7 @@ public class Tank_Drive extends OpMode
 
     @Override
     public void init_loop() {
-        //Code loops once you hit init.
+        //Code loops once you hit init
 
         telemetry.addData("Status:", "Armed");
 
