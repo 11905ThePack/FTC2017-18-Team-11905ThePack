@@ -8,8 +8,6 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-//import static android.os.SystemClock.sleep;
-
 @TeleOp(name="TankDrive", group="Drive-Type OpModes")
 
 public class Tank_Drive extends OpMode
@@ -27,8 +25,9 @@ public class Tank_Drive extends OpMode
     private Servo GlyphServoRight = null; //Right half of glyph grabber
     private Servo RelicServoFront = null; //Front half of the Relic Grabber
     private Servo RelicServoBack = null; //Back half of the Relic Grabber
+    private Servo RelicServoPitch = null; //Relic Grabber Rotation
 
-    DeviceInterfaceModule DeviceIM;
+    private DeviceInterfaceModule DeviceIM;
 
     //These outline the starting positions of all of the servos, as well as the range they're allowed to work in.
     //This is in degrees.
@@ -36,6 +35,7 @@ public class Tank_Drive extends OpMode
     private double servoGlyphRightPosition = 0;
     private double servoRelicServoFrontPosition = 45;
     private double servoRelicServoBackPosition = 80;
+    private double servoRelicServoPitchPosition = 0;
     private final static double servoMinRange  = 1;
     private final static double servoMaxRange  = 180;
 
@@ -57,6 +57,7 @@ public class Tank_Drive extends OpMode
         GlyphServoLeft = hardwareMap.get(Servo.class, "GlyphServoLeft");
         GlyphServoRight = hardwareMap.get(Servo.class, "GlyphServoRight");
 
+        RelicServoPitch = hardwareMap.get(Servo.class, "RelicPitch");
         RelicServoFront = hardwareMap.get(Servo.class, "RelicServoFront");
         RelicServoBack = hardwareMap.get(Servo.class, "RelicServoBack");
 
@@ -108,11 +109,16 @@ public class Tank_Drive extends OpMode
             consoleOut = "Extending Relic Grabber To Maximum Length";
         }
 
-        if (gamepad1.a)
+        if (gamepad1.a) {
             motorSpeedMultiplier = 1;
+            DeviceIM.setLED(1,false);
+        }
 
-        if (gamepad1.b)
+        if (gamepad1.b) {
             motorSpeedMultiplier = .2;
+            DeviceIM.setLED(1,true);
+
+        }
 
         // Use gamepad X & B to set Servo's Variables. This is on Controller Two.
         if (gamepad2.x) {
@@ -151,6 +157,9 @@ public class Tank_Drive extends OpMode
         servoRelicServoBackPosition = Range.clip(servoRelicServoBackPosition, servoMinRange, servoMaxRange);
         RelicServoBack.setPosition(servoRelicServoBackPosition / 180);
 
+        servoRelicServoPitchPosition = Range.clip(servoRelicServoPitchPosition, servoMinRange, servoMaxRange);
+        RelicServoPitch.setPosition(servoRelicServoPitchPosition / 180);
+
 
         // Send calculated power to wheels (There aren't any calculations done, this is pretty much extra at the moment.)
         DriveMotorLeft.setPower(DriveMotorLeftPower);
@@ -163,7 +172,6 @@ public class Tank_Drive extends OpMode
         telemetry.addData( "Motor Speed","%.2f", motorSpeedMultiplier);
         telemetry.addData( "Console Out", consoleOut);
 
-        //sleep(50); //This saves battery by only running opMode 20 times a second. This is one Minecraft tick.
     }
 
 
