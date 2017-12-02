@@ -55,8 +55,8 @@ public class Tank_Drive extends OpMode
         RelicServoFront = hardwareMap.get(Servo.class, "RelicServoFront");
         RelicServoBack = hardwareMap.get(Servo.class, "RelicServoBack");
 
-        DriveMotorLeft.setDirection(DcMotor.Direction.FORWARD);
-        DriveMotorRight.setDirection(DcMotor.Direction.REVERSE);
+        DriveMotorLeft.setDirection(DcMotor.Direction.REVERSE);
+        DriveMotorRight.setDirection(DcMotor.Direction.FORWARD);
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
