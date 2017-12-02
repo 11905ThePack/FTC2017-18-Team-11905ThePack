@@ -38,6 +38,8 @@ public class Tank_Drive extends OpMode
     private double servoRelicServoPitchPosition = 0;
     private final static double servoMinRange  = 1;
     private final static double servoMaxRange  = 180;
+    private double motorSpeedMultiplier;
+
 
     @Override
     public void init() {
@@ -72,7 +74,6 @@ public class Tank_Drive extends OpMode
     @Override
     public void init_loop() {
         //Code loops once you hit init
-
         telemetry.addData("Status:", "Armed");
 
     }
@@ -94,7 +95,6 @@ public class Tank_Drive extends OpMode
         double DriveMotorRightPower;
 
         // Init some local variables.
-        double motorSpeedMultiplier = 1;
         String consoleOut = "Nothing Yet";
 
 
@@ -117,7 +117,6 @@ public class Tank_Drive extends OpMode
         if (gamepad1.b) {
             motorSpeedMultiplier = .2;
             DeviceIM.setLED(1,true);
-
         }
 
         // Use gamepad X & B to set Servo's Variables. This is on Controller Two.
