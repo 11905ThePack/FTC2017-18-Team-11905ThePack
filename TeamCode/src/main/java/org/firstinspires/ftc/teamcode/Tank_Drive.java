@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -21,11 +22,13 @@ public class Tank_Drive extends OpMode
     private DcMotor DriveMotorLeft = null; //Left Motor
     private DcMotor DriveMotorRight = null; //Right Motor
     //private DcMotor MotorRelicExtension = null; //Relic Extension Motor
+
     private Servo GlyphServoLeft = null; //Left half of glyph grabber
     private Servo GlyphServoRight = null; //Right half of glyph grabber
     private Servo RelicServoFront = null; //Front half of the Relic Grabber
     private Servo RelicServoBack = null; //Back half of the Relic Grabber
 
+    DeviceInterfaceModule DeviceIM;
 
     //These outline the starting positions of all of the servos, as well as the range they're allowed to work in.
     //This is in degrees.
@@ -47,15 +50,18 @@ public class Tank_Drive extends OpMode
         // step (using the FTC Robot Controller app on the phone).
         DriveMotorLeft = hardwareMap.get(DcMotor.class, "DriveMotorLeft");
         DriveMotorRight = hardwareMap.get(DcMotor.class, "DriveMotorRight");
+        DriveMotorLeft.setDirection(DcMotor.Direction.REVERSE);
+        DriveMotorRight.setDirection(DcMotor.Direction.FORWARD);
+        //MotorRelicExtension = hardwareMap.get(DcMotor.class, "MotorRelicExtension");
+
         GlyphServoLeft = hardwareMap.get(Servo.class, "GlyphServoLeft");
         GlyphServoRight = hardwareMap.get(Servo.class, "GlyphServoRight");
 
-        //MotorRelicExtension = hardwareMap.get(DcMotor.class, "MotorRelicExtension");
         RelicServoFront = hardwareMap.get(Servo.class, "RelicServoFront");
         RelicServoBack = hardwareMap.get(Servo.class, "RelicServoBack");
 
-        DriveMotorLeft.setDirection(DcMotor.Direction.REVERSE);
-        DriveMotorRight.setDirection(DcMotor.Direction.FORWARD);
+        DeviceIM = hardwareMap.get(DeviceInterfaceModule.class, "dim");
+
 
         // Tell the driver that initialization is complete.
         telemetry.addData("Status", "Initialized");
