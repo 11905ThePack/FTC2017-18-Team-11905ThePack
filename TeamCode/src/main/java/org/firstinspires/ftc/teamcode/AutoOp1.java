@@ -47,8 +47,13 @@ public class AutoOp1 extends LinearOpMode {
 // eTime is an abbreviated way of saying Elapsed Time, which says says ow long the robot to drive!
 //The DriveMotors are used for actually controlling the robot
 
+
     private DcMotor DriveMotorLeft = null;
     private DcMotor DriveMotorRight = null;
+
+    ElapsedTime eTime = new ElapsedTime();
+
+
 
     @Override
 
@@ -68,7 +73,6 @@ public class AutoOp1 extends LinearOpMode {
         DriveMotorLeft.setPower(1.0);
         DriveMotorRight.setPower(1.0);
 
-        ElapsedTime eTime = new ElapsedTime();
 
         eTime.reset();
 

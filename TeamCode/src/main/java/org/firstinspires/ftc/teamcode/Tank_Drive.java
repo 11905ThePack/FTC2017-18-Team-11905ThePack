@@ -120,11 +120,13 @@ public class Tank_Drive extends OpMode
         }
 
         // Use gamepad X & B to set Servo's Variables. This is on Controller Two.
+
+        /*
         if (gamepad2.x) {
             servoRelicServoFrontPosition = 160;
             servoRelicServoBackPosition = 15;
         }
-
+        */
         if (gamepad2.b) {
             servoRelicServoBackPosition = 15;
             servoRelicServoFrontPosition = 160;
