@@ -78,8 +78,9 @@ public class AutoOp_Pos1_85pts extends LinearOpMode {
     static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
     static final double     COUNTS_PER_INCH         = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
                                                       (WHEEL_DIAMETER_INCHES * 3.1415);
-    //static final double     DRIVE_SPEED             = 0.6;
-    //static final double     TURN_SPEED              = 0.5;
+    static final double     DRIVE_SPEED             = 0.6;
+    static final double     TURN_SPEED              = 0.5;
+
 
     @Override
     public void runOpMode() {
@@ -92,7 +93,7 @@ public class AutoOp_Pos1_85pts extends LinearOpMode {
         DriveMotorRight = hardwareMap.get(DcMotor.class, "DriveMotorRight");
 
         // Send telemetry message to signify robot waiting;
-        telemetry.addData("Status", "Resetting Encoders");    //
+        telemetry.addData("Status", "Resetting Encoders");
         telemetry.update();
 
         DriveMotorLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -112,12 +113,10 @@ public class AutoOp_Pos1_85pts extends LinearOpMode {
 
         // Step through each leg of the path,
         // Note: Reverse movement is obtained by setting a negative distance (not speed)
-        //(DRIVE_SPEED,  48,  48, 5.0)  // S1: Forward 47 Inches with 5 Sec timeout
-        //(TURN_SPEED,   12, -12, 4.0)  // S2: Turn Right 12 Inches with 4 Sec timeout
-        //(DRIVE_SPEED, -24, -24, 4.0)  // S3: Reverse 24 Inches with 4 Sec timeout
+        encoderDrive(DRIVE_SPEED,  48,  48, 5.0);  // S1: Forward 47 Inches with 5 Sec timeout
+        encoderDrive(TURN_SPEED,   12, -12, 4.0);  // S2: Turn Right 12 Inches with 4 Sec timeout
+        encoderDrive(DRIVE_SPEED, -24, -24, 4.0);  // S3: Reverse 24 Inches with 4 Sec timeout
 
-        //robot.leftClaw.setPosition(1.0);            // S4: Stop and close the claw.
-        //robot.rightClaw.setPosition(0.0);
         sleep(1000);     // pause for servos to move
 
         telemetry.addData("Path", "Complete");
