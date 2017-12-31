@@ -52,8 +52,8 @@ public class Tank_Drive extends OpMode
         // step (using the FTC Robot Controller app on the phone).
         DriveMotorLeft = hardwareMap.get(DcMotor.class, "DriveMotorLeft");
         DriveMotorRight = hardwareMap.get(DcMotor.class, "DriveMotorRight");
-        DriveMotorLeft.setDirection(DcMotor.Direction.REVERSE);
-        DriveMotorRight.setDirection(DcMotor.Direction.FORWARD);
+        DriveMotorLeft.setDirection(DcMotor.Direction.FORWARD);
+        DriveMotorRight.setDirection(DcMotor.Direction.REVERSE);
 
         //Init MotorRelicExtension a.k.a "Le Booper o' Death"
         MotorRelicExtension = hardwareMap.get(DcMotor.class, "MotorRelicExtension");
@@ -67,7 +67,7 @@ public class Tank_Drive extends OpMode
         RelicServoFront = hardwareMap.get(Servo.class, "RelicServoFront");
         RelicServoBack = hardwareMap.get(Servo.class, "RelicServoBack");
 
-        DeviceIM = hardwareMap.get(DeviceInterfaceModule.class, "DeviceInterfaceModule");
+        DeviceIM = hardwareMap.get(DeviceInterfaceModule.class, "DIM");
 
 
         // Tell the driver that initialization is complete.
@@ -101,17 +101,10 @@ public class Tank_Drive extends OpMode
         // Init some local variables.
         String consoleOut = "Nothing Yet";
 
-
+        //Gamepad 1 Controls
         // Tank Mode uses one stick to control each wheel. This is on Controller One.
          DriveMotorLeftPower  = -gamepad1.left_stick_y * motorSpeedMultiplier;
          DriveMotorRightPower = -gamepad1.right_stick_y * motorSpeedMultiplier ;
-
-
-        //Use "Up" on the DPad to trigger the full extension of the relic grabber. (This will later not work if runTime isn't high enough,
-        //because you're not allowed  to move the relic outside of the field until endgame.)
-        if (gamepad1.dpad_up) {
-            consoleOut = "Extending Relic Grabber To Maximum Length";
-        }
 
         if (gamepad1.a) {
             motorSpeedMultiplier = 1;
@@ -123,10 +116,12 @@ public class Tank_Drive extends OpMode
             DeviceIM.setLED(1,true);
         }
 
-        // Use gamepad X & B to set Servo's Variables. This is on Controller Two.
-
+        //Gamepad 2 Controls
         if (gamepad2.dpad_up) {
-
+            consoleOut = "Extended Relic Grabber To Maximum Length";
+            MotorRelicExtension.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            MotorRelicExtension.setTargetPosition(720);
+            MotorRelicExtension.setPower(1);
         }
 
 
