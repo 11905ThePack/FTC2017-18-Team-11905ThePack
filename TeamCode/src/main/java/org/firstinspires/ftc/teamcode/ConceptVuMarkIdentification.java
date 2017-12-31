@@ -29,7 +29,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -49,11 +48,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 /**
  * This OpMode illustrates the basics of using the Vuforia engine to determine
  * the identity of Vuforia VuMarks encountered on the field. The code is structured as
- * a LinearOpMode. It shares much structure with {@link ConceptVuforiaNavigation}; we do not here
+ * a LinearOpMode. It shares much structure with {}; we do not here
  * duplicate the core Vuforia documentation found there, but rather instead focus on the
  * differences between the use of Vuforia for navigation vs VuMark identification.
  *
- * @see ConceptVuforiaNavigation
  * @see VuforiaLocalizer
  * @see VuforiaTrackableDefaultListener
  * see  ftc_app/doc/tutorial/FTC_FieldCoordinateSystemDefinition.pdf
@@ -62,7 +60,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list.
  *
  * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
- * is explained in {@link ConceptVuforiaNavigation}.
+ * is explained in {@link}.
  */
 
 @Autonomous(name="Concept: VuMark Id", group ="Concept")
@@ -90,19 +88,6 @@ public class ConceptVuMarkIdentification extends LinearOpMode {
 
         // OR...  Do Not Activate the Camera Monitor View, to save power
         // VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters();
-
-        /*
-         * IMPORTANT: You need to obtain your own license key to use Vuforia. The string below with which
-         * 'parameters.vuforiaLicenseKey' is initialized is for illustration only, and will not function.
-         * A Vuforia 'Development' license key, can be obtained free of charge from the Vuforia developer
-         * web site at https://developer.vuforia.com/license-manager.
-         *
-         * Vuforia license keys are always 380 characters long, and look as if they contain mostly
-         * random data. As an example, here is a example of a fragment of a valid key:
-         *      ... yIgIzTqZ4mWjk9wd3cZO9T1axEqzuhxoGlfOOI2dRzKS4T0hQ8kT ...
-         * Once you've obtained a license key, copy the string from the Vuforia web site
-         * and paste it in to your code onthe next line, between the double quotes.
-         */
         parameters.vuforiaLicenseKey = "AXP04Yz/////AAAAGThpXmXBV06voC5uPNdROCVgdOGJ12EoM411qfUt/jRG2l29n2mFd8m38+Pe+njHWXRsIxU9orFJXA4KO2wOcZBruxk3+hY1C3bUCCwbCN0ngMkkiioI5UuKDxWwNpL/qmMPS2SUg6a6xV5J680p5Yxjh6W5TNLpSyX+vdhc9hlkSrzWJPvrm3TYAt06+ox5OVen6tPW/6uSG9TYbCCsx5HKAu/dVzM1lJWzgF/kxXQaRDEck9k1lZp2Y4kyZadvHuWuDg2+EujNPzA9aST8ajxcARP/EjQM+5+hkvAPqHkRPYiZHf1dFZwy6B3e5+d72F1hsFvUYnrUtqOdXwt1KFENNQ+4ZpL622V2NK7ZA1x8";
 
         /*

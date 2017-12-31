@@ -19,7 +19,7 @@ public class Tank_Drive extends OpMode
     private ElapsedTime runtime = new ElapsedTime(); //We don't really need an elapsedtime telemetry, but here it is.
     private DcMotor DriveMotorLeft = null; //Left Motor
     private DcMotor DriveMotorRight = null; //Right Motor
-    //private DcMotor MotorRelicExtension = null; //Relic Extension Motor
+    private DcMotor MotorRelicExtension = null; //Relic Extension Motor
 
     private Servo GlyphServoLeft = null; //Left half of glyph grabber
     private Servo GlyphServoRight = null; //Right half of glyph grabber
@@ -54,7 +54,11 @@ public class Tank_Drive extends OpMode
         DriveMotorRight = hardwareMap.get(DcMotor.class, "DriveMotorRight");
         DriveMotorLeft.setDirection(DcMotor.Direction.REVERSE);
         DriveMotorRight.setDirection(DcMotor.Direction.FORWARD);
-        //MotorRelicExtension = hardwareMap.get(DcMotor.class, "MotorRelicExtension");
+
+        //Init MotorRelicExtension a.k.a "Le Booper o' Death"
+        MotorRelicExtension = hardwareMap.get(DcMotor.class, "MotorRelicExtension");
+        MotorRelicExtension.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        MotorRelicExtension.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         GlyphServoLeft = hardwareMap.get(Servo.class, "GlyphServoLeft");
         GlyphServoRight = hardwareMap.get(Servo.class, "GlyphServoRight");
@@ -121,26 +125,32 @@ public class Tank_Drive extends OpMode
 
         // Use gamepad X & B to set Servo's Variables. This is on Controller Two.
 
-        /*
+        if (gamepad2.dpad_up) {
+
+        }
+
+
+
+
+
         if (gamepad2.x) {
             servoRelicServoFrontPosition = 160;
             servoRelicServoBackPosition = 15;
         }
-        */
-        if (gamepad2.b) {
+
+        if (gamepad2.y) {
             servoRelicServoBackPosition = 15;
             servoRelicServoFrontPosition = 160;
         }
 
-        // Use gamepad Y & A to set Servo's variables. This is on Controller Two.
+        if (gamepad2.b) {
+            servoGlyphLeftPosition = 90;
+            servoGlyphRightPosition = 90;
+        }
+
         if (gamepad2.a) {
             servoGlyphLeftPosition = 80;
             servoGlyphRightPosition = 100;
-        }
-        if (gamepad2.y) {
-            servoGlyphLeftPosition = 90;
-            servoGlyphRightPosition = 90;
-
         }
 
 

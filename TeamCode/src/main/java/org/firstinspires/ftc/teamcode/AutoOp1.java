@@ -68,6 +68,9 @@ public class AutoOp1 extends LinearOpMode {
         DriveMotorRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         DriveMotorLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+
+
+
         waitForStart();
 
         DriveMotorLeft.setPower(1.0);
