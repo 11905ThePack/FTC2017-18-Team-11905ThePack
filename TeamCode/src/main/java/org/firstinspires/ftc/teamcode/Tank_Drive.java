@@ -17,8 +17,11 @@ public class Tank_Drive extends OpMode
     //As a general rule, use uppercase first letters for hardware mapping,
     //and use lowercase first letters for variables.
     private ElapsedTime runtime = new ElapsedTime(); //We don't really need an elapsedtime telemetry, but here it is.
-    private DcMotor DriveMotorLeft = null; //Left Motor
-    private DcMotor DriveMotorRight = null; //Right Motor
+    private DcMotor DriveLeftFront = null; //Left Motor
+    private DcMotor DriveRightFront = null; //Right Motor
+    private DcMotor DriveLeftRear = null; //Left Motor
+    private DcMotor DriveRightRear = null; //Left Motor
+
     private DcMotor MotorRelicExtension = null; //Relic Extension Motor
 
     private Servo GlyphServoLeft = null; //Left half of glyph grabber
@@ -50,10 +53,10 @@ public class Tank_Drive extends OpMode
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        DriveMotorLeft = hardwareMap.get(DcMotor.class, "DriveMotorLeft");
-        DriveMotorRight = hardwareMap.get(DcMotor.class, "DriveMotorRight");
-        DriveMotorLeft.setDirection(DcMotor.Direction.FORWARD);
-        DriveMotorRight.setDirection(DcMotor.Direction.REVERSE);
+        DriveLeftFront = hardwareMap.get(DcMotor.class, "DriveLeftFront");
+        DriveRightFront = hardwareMap.get(DcMotor.class, "DriveRightFront");
+        DriveLeftRear = hardwareMap.get(DcMotor.class, "DriveLeftRear");
+        DriveRightRear = hardwareMap.get(DcMotor.class, "DriveRightRear");
 
         //Init MotorRelicExtension a.k.a "Le Booper o' Death"
         MotorRelicExtension = hardwareMap.get(DcMotor.class, "MotorRelicExtension");
@@ -102,9 +105,15 @@ public class Tank_Drive extends OpMode
         String consoleOut = "Nothing Yet";
 
         //Gamepad 1 Controls
-        // Tank Mode uses one stick to control each wheel. This is on Controller One.
-         DriveMotorLeftPower  = -gamepad1.left_stick_y * motorSpeedMultiplier;
-         DriveMotorRightPower = -gamepad1.right_stick_y * motorSpeedMultiplier ;
+        // POV Mode written by dmssargent, sourced from the FTC Forum.
+        //POV Mode. One stick controls translation and one controls rotaation.
+        double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
+        double robotAngle = Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
+        double rightX = gamepad1.right_stick_x;
+        final double v1 = r * Math.cos(robotAngle) + rightX;
+        final double v2 = r * Math.sin(robotAngle) - rightX;
+        final double v3 = r * Math.sin(robotAngle) + rightX;
+        final double v4 = r * Math.cos(robotAngle) - rightX;
 
         if (gamepad1.a) {
             motorSpeedMultiplier = 1;
@@ -168,13 +177,15 @@ public class Tank_Drive extends OpMode
 
 
         // Send calculated power to wheels (There aren't any calculations done, this is pretty much extra at the moment.)
-        DriveMotorLeft.setPower(DriveMotorLeftPower);
-        DriveMotorRight.setPower(DriveMotorRightPower);
+        DriveLeftFront.setPower(v1);
+        DriveRightFront.setPower(v2);
+        DriveLeftRear.setPower(v3);
+        DriveRightRear.setPower(v4);
 
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Running, Run Time: " + runtime.toString());
-        telemetry.addData("Motors", "Left: (%.2f), Right: (%.2f)", DriveMotorLeftPower, DriveMotorRightPower);
-        //telemetry.addData("Servo Positions (Degrees)","%.2f", servoGlyphLeftPosition, servoGlyphRightPosition); (This is temporarily broken, but we'll fix it)
+        telemetry.addData("Motors", "FrontLeft: (%.2f), FrontRight: (%.2f)", DriveLeftFront, DriveRightFront);
+        telemetry.addData("Motors", "RightLeft: (%.2f), RearRight: (%.2f)", DriveLeftRear, DriveRightRear);
         telemetry.addData( "Motor Speed","%.2f", motorSpeedMultiplier);
         telemetry.addData( "Console Out", consoleOut);
 
