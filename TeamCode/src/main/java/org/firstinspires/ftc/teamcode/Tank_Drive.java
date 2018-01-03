@@ -184,8 +184,8 @@ public class Tank_Drive extends OpMode
 
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Running, Run Time: " + runtime.toString());
-        telemetry.addData("Motors", "FrontLeft: (%.2f), FrontRight: (%.2f)", DriveLeftFront, DriveRightFront);
-        telemetry.addData("Motors", "RightLeft: (%.2f), RearRight: (%.2f)", DriveLeftRear, DriveRightRear);
+        telemetry.addData("FrontMotors", "FrontLeft: (%.2f), FrontRight: (%.2f)", DriveLeftFront, DriveRightFront);
+        telemetry.addData("RearMotors", "RearLeft: (%.2f), RearRight: (%.2f)", DriveLeftRear, DriveRightRear);
         telemetry.addData( "Motor Speed","%.2f", motorSpeedMultiplier);
         telemetry.addData( "Console Out", consoleOut);
 
