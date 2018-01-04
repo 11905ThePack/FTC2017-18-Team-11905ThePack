@@ -16,11 +16,11 @@ public class Tank_Drive extends OpMode
     //All servo variables are in DEGREES.
     //As a general rule, use uppercase first letters for hardware mapping,
     //and use lowercase first letters for variables.
-    private ElapsedTime runtime = new ElapsedTime(); //We don't really need an elapsedtime telemetry, but here it is.
-    private DcMotor DriveLeftFront = null; //Left Motor
-    private DcMotor DriveRightFront = null; //Right Motor
-    private DcMotor DriveLeftRear = null; //Left Motor
-    private DcMotor DriveRightRear = null; //Left Motor
+    private ElapsedTime runtime = new ElapsedTime(); //We don't really need an elapsed time telemetry, but here it is.
+    private DcMotor DriveLeftFront = null; //Left Front Motor
+    private DcMotor DriveRightFront = null; //Right Front Motor
+    private DcMotor DriveLeftRear = null; //Left Rear Motor
+    private DcMotor DriveRightRear = null; //Right Rear Motor
 
     private DcMotor MotorRelicExtension = null; //Relic Extension Motor
 
@@ -98,15 +98,14 @@ public class Tank_Drive extends OpMode
         //Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
 
         // Setup a variable for each drive wheel and servos to save power level for telemetry.
-        double DriveMotorLeftPower;
-        double DriveMotorRightPower;
+        double RelicGrabberExtensionPos = MotorRelicExtension.getCurrentPosition();
 
         // Init some local variables.
         String consoleOut = "Nothing Yet";
 
         //Gamepad 1 Controls
         // POV Mode written by dmssargent, sourced from the FTC Forum.
-        //POV Mode. One stick controls translation and one controls rotaation.
+        //POV Mode. One stick controls translation and one controls rotation.
         double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
         double robotAngle = Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
         double rightX = gamepad1.right_stick_x;
@@ -117,25 +116,24 @@ public class Tank_Drive extends OpMode
 
         if (gamepad1.a) {
             motorSpeedMultiplier = 1;
-            DeviceIM.setLED(1,false);
+            DeviceIM.setLED(1, false);
         }
 
         if (gamepad1.b) {
             motorSpeedMultiplier = .2;
-            DeviceIM.setLED(1,true);
+            DeviceIM.setLED(1, true);
         }
 
         //Gamepad 2 Controls
         if (gamepad2.dpad_up) {
-            consoleOut = "Extended Relic Grabber To Maximum Length";
-            MotorRelicExtension.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            MotorRelicExtension.setTargetPosition(720);
+            consoleOut = "Extending Relic Grabber To Maximum Length";
             MotorRelicExtension.setPower(1);
         }
 
-
-
-
+        if (gamepad2.dpad_down) {
+            consoleOut = "Stopped Relic Grabber Extension";
+            MotorRelicExtension.setPower(0);
+        }
 
         if (gamepad2.x) {
             servoRelicServoFrontPosition = 160;
@@ -156,7 +154,6 @@ public class Tank_Drive extends OpMode
             servoGlyphLeftPosition = 80;
             servoGlyphRightPosition = 100;
         }
-
 
 
         // Set Servo position to variable "servoPosition"
@@ -182,13 +179,18 @@ public class Tank_Drive extends OpMode
         DriveLeftRear.setPower(v3);
         DriveRightRear.setPower(v4);
 
+        //This code will prevent the Relic Extender from hurting itself.
+        //if RelicGrabberExtensionPos = 720{
+
+        //}
+
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Running, Run Time: " + runtime.toString());
         telemetry.addData("FrontMotors", "FrontLeft: (%.2f), FrontRight: (%.2f)", DriveLeftFront, DriveRightFront);
         telemetry.addData("RearMotors", "RearLeft: (%.2f), RearRight: (%.2f)", DriveLeftRear, DriveRightRear);
+        telemetry.addData("RelicGrabberExtensionPos", "Position: (%.2f)", RelicGrabberExtensionPos);
         telemetry.addData( "Motor Speed","%.2f", motorSpeedMultiplier);
         telemetry.addData( "Console Out", consoleOut);
-
     }
 
 
