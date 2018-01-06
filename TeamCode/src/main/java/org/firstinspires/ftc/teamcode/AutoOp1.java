@@ -43,7 +43,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 public class AutoOp1 extends LinearOpMode {
 
-//Here Goes to Explaining Varaibles!
+//Here Goes to Explaining Variables!
 // eTime is an abbreviated way of saying Elapsed Time, which says says ow long the robot to drive!
 //The DriveMotors are used for actually controlling the robot
 
