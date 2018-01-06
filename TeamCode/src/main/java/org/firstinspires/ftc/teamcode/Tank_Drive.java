@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -41,7 +42,7 @@ public class Tank_Drive extends OpMode
     private double servoRelicServoPitchPosition = 0;
     private final static double servoMinRange  = 1;
     private final static double servoMaxRange  = 180;
-    private double motorSpeedMultiplier;
+    private double motorSpeedMultiplier = .6;
 
 
     @Override
@@ -55,8 +56,10 @@ public class Tank_Drive extends OpMode
         // step (using the FTC Robot Controller app on the phone).
         DriveLeftFront = hardwareMap.get(DcMotor.class, "DriveLeftFront");
         DriveRightFront = hardwareMap.get(DcMotor.class, "DriveRightFront");
+        DriveRightFront.setDirection(DcMotorSimple.Direction.REVERSE);
         DriveLeftRear = hardwareMap.get(DcMotor.class, "DriveLeftRear");
         DriveRightRear = hardwareMap.get(DcMotor.class, "DriveRightRear");
+        DriveRightRear.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //Init MotorRelicExtension a.k.a "Le Booper o' Death"
         MotorRelicExtension = hardwareMap.get(DcMotor.class, "MotorRelicExtension");
@@ -107,7 +110,7 @@ public class Tank_Drive extends OpMode
         // POV Mode written by dmssargent, sourced from the FTC Forum.
         //POV Mode. One stick controls translation and one controls rotation.
         double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
-        double robotAngle = Math.atan2(gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
+        double robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
         double rightX = gamepad1.right_stick_x;
         final double v1 = r * Math.cos(robotAngle) + rightX;
         final double v2 = r * Math.sin(robotAngle) - rightX;
@@ -115,24 +118,32 @@ public class Tank_Drive extends OpMode
         final double v4 = r * Math.cos(robotAngle) - rightX;
 
         if (gamepad1.a) {
-            motorSpeedMultiplier = 1;
+            motorSpeedMultiplier = .6;
             DeviceIM.setLED(1, false);
         }
 
         if (gamepad1.b) {
-            motorSpeedMultiplier = .2;
+            motorSpeedMultiplier = .1;
             DeviceIM.setLED(1, true);
         }
 
         //Gamepad 2 Controls
         if (gamepad2.dpad_up) {
             consoleOut = "Extending Relic Grabber To Maximum Length";
-            MotorRelicExtension.setPower(1);
+            MotorRelicExtension.setTargetPosition(35);
+            MotorRelicExtension.setPower(.2);
         }
 
         if (gamepad2.dpad_down) {
             consoleOut = "Stopped Relic Grabber Extension";
             MotorRelicExtension.setPower(0);
+            RelicServoPitch.setPosition(30);
+        }
+
+        if (gamepad2.dpad_left) {
+            consoleOut = "Returning Relic Extension";
+            MotorRelicExtension.setTargetPosition(0);
+            MotorRelicExtension.setPower(-.2);
         }
 
         if (gamepad2.x) {
@@ -174,10 +185,10 @@ public class Tank_Drive extends OpMode
 
 
         // Send calculated power to wheels (There aren't any calculations done, this is pretty much extra at the moment.)
-        DriveLeftFront.setPower(v1);
-        DriveRightFront.setPower(v2);
-        DriveLeftRear.setPower(v3);
-        DriveRightRear.setPower(v4);
+        DriveLeftFront.setPower(v1 * motorSpeedMultiplier);
+        DriveRightFront.setPower(v2 * motorSpeedMultiplier);
+        DriveLeftRear.setPower(v3 * motorSpeedMultiplier);
+        DriveRightRear.setPower(v4 * motorSpeedMultiplier);
 
         //This code will prevent the Relic Extender from hurting itself.
         //if RelicGrabberExtensionPos = 720{
@@ -186,9 +197,9 @@ public class Tank_Drive extends OpMode
 
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Running, Run Time: " + runtime.toString());
-        telemetry.addData("FrontMotors", "FrontLeft: (%.2f), FrontRight: (%.2f)", DriveLeftFront, DriveRightFront);
-        telemetry.addData("RearMotors", "RearLeft: (%.2f), RearRight: (%.2f)", DriveLeftRear, DriveRightRear);
-        telemetry.addData("RelicGrabberExtensionPos", "Position: (%.2f)", RelicGrabberExtensionPos);
+        //telemetry.addData("FrontMotors:", "%.2f", DriveLeftFront, DriveRightFront);
+        //telemetry.addData("RearMotors:", "%.2f", DriveLeftRear, DriveRightRear);
+        //telemetry.addData("RelicGrabberExtensionPos", "Position: %.2f", RelicGrabberExtensionPos);
         telemetry.addData( "Motor Speed","%.2f", motorSpeedMultiplier);
         telemetry.addData( "Console Out", consoleOut);
     }
