@@ -107,7 +107,8 @@ public class Tank_Drive extends OpMode
         String consoleOut = "Nothing Yet";
 
         //Gamepad 1 Controls
-        // POV Mode written by dmssargent, sourced from the FTC Forum.
+        //POV Mode originally written by dmssargent, sourced from the FTC Forum.
+        //However, there are multiple modifications that were made to make the translation more intuitive.
         //POV Mode. One stick controls translation and one controls rotation.
         double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
         double robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
@@ -184,7 +185,7 @@ public class Tank_Drive extends OpMode
         RelicServoPitch.setPosition(servoRelicServoPitchPosition / 180);
 
 
-        // Send calculated power to wheels (There aren't any calculations done, this is pretty much extra at the moment.)
+        // Send calculated power to wheels.
         DriveLeftFront.setPower(v1 * motorSpeedMultiplier);
         DriveRightFront.setPower(v2 * motorSpeedMultiplier);
         DriveLeftRear.setPower(v3 * motorSpeedMultiplier);
