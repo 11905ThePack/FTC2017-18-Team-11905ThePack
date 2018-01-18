@@ -99,35 +99,36 @@ public class AutoOp_Pos1 extends LinearOpMode {
 
         waitForStart();
 
-        if (vuMark != RelicRecoveryVuMark.LEFT) {
+        while (opModeIsActive()) {
 
-            encoderDrive(DRIVE_SPEED,36,36,1); //S1
-            encoderDrive(TURN_SPEED, 3, -3, 1); //S2
-            encoderDrive(DRIVE_SPEED,12,12,1); //S3
+            if (vuMark != RelicRecoveryVuMark.LEFT) {
+
+                encoderDrive(DRIVE_SPEED, 36, 36, 1); //S1
+                encoderDrive(TURN_SPEED, 3, -3, 1); //S2
+                encoderDrive(DRIVE_SPEED, 12, 12, 1); //S3
+
+            }
+
+            if (vuMark != RelicRecoveryVuMark.CENTER) {
+
+                encoderDrive(DRIVE_SPEED, 36, 36, 1); //S1
+                encoderDrive(TURN_SPEED, 3, -3, 1); //S2
+                encoderDrive(DRIVE_SPEED, 12, 12, 1); //S3
+
+
+            }
+
+            if (vuMark != RelicRecoveryVuMark.RIGHT) {
+
+                encoderDrive(DRIVE_SPEED, 36, 36, 1); //S1
+                encoderDrive(TURN_SPEED, 3, -3, 1); //S2
+                encoderDrive(DRIVE_SPEED, 12, 12, 1); //S3
+
+
+            }
 
         }
-
-        if (vuMark != RelicRecoveryVuMark.CENTER) {
-
-            encoderDrive(DRIVE_SPEED,36,36,1); //S1
-            encoderDrive(TURN_SPEED, 3, -3, 1); //S2
-            encoderDrive(DRIVE_SPEED,12,12,1); //S3
-
-
-        }
-
-        if (vuMark != RelicRecoveryVuMark.RIGHT) {
-
-            encoderDrive(DRIVE_SPEED,36,36,1); //S1
-            encoderDrive(TURN_SPEED, 3, -3, 1); //S2
-            encoderDrive(DRIVE_SPEED,12,12,1); //S3
-
-
-
-        }
-
     }
-
 
 
     public void encoderDrive(double speed,
