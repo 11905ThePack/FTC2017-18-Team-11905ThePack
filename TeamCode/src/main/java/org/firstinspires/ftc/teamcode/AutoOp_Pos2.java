@@ -62,6 +62,7 @@ public class AutoOp_Pos2 extends LinearOpMode {
     private Servo RelicServoFront = null; //Front half of the Relic Grabber
     private Servo RelicServoBack = null; //Back half of the Relic Grabber
     private Servo RelicServoPitch = null; //Relic Grabber Rotation
+    private Servo JewelWhackerServo = null; //Jewel Whacker Servo
 
     private GyroSensor Gyro = null; // Das ist die Gyro
 
