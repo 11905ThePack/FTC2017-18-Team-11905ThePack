@@ -48,7 +48,7 @@ public class MainTeleOp extends OpMode
     private double servoJewelWhackerServoPosition = 5;
     private final static double servoMinRange  = 1;
     private final static double servoMaxRange  = 180;
-    private double motorSpeedMultiplier = .6;
+    private double motorSpeedMultiplier = .55;
     String consoleOut = "Nothing Yet";
 
     @Override
@@ -127,7 +127,7 @@ public class MainTeleOp extends OpMode
         // Init some local variables.
 
         //Gamepad 1 Controls
-        // POV Mode written by dmssargent, sourced from the FTC Forum.
+        // POV Mode writ0ten by dmssargent, sourced from the FTC Forum.
         //POV Mode. One stick controls translation and one controls rotation.
         double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
         double robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
@@ -138,7 +138,7 @@ public class MainTeleOp extends OpMode
         final double v4 = r * Math.cos(robotAngle) - rightX;
 
         if (gamepad1.a) {
-            motorSpeedMultiplier = .6;
+            motorSpeedMultiplier = .55;
             DeviceIM.setLED(1, false);
         }
 
