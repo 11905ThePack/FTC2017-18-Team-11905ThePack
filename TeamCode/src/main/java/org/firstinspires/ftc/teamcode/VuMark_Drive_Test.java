@@ -64,17 +64,14 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * is explained in {@link}.
  */
 
-@Autonomous(name="Concept: VuMark Id", group ="Concept")
+@Autonomous(name="Concept: VuMark Id2", group ="Concept")
 //@Disabled
-public class ConceptVuMarkIdentification extends LinearOpMode {
+public class VuMark_Drive_Test extends LinearOpMode {
 
     public static final String TAG = "Vuforia VuMark Sample";
 
-    private DcMotor DriveLeftFront = null; //Left Front Motor
-    private DcMotor DriveRightFront = null; //Right Front Motor
-    private DcMotor DriveLeftRear = null; //Left Rear Motor
-    private DcMotor DriveRightRear = null; //Right Rear Motor
-
+    private DcMotor DriveLeftRear = null;
+    private DcMotor DriveRightRear = null;
 
     OpenGLMatrix lastLocation = null;
 
@@ -85,6 +82,9 @@ public class ConceptVuMarkIdentification extends LinearOpMode {
     VuforiaLocalizer vuforia;
 
     @Override public void runOpMode() {
+
+        DriveLeftRear = hardwareMap.get(DcMotor.class, "DriveLeftRear");
+        DriveRightRear = hardwareMap.get(DcMotor.class, "DriveRightRear");
 
         /*
          * To start up Vuforia, tell it the view that we wish to use for camera monitor (on the RC phone);
@@ -123,8 +123,6 @@ public class ConceptVuMarkIdentification extends LinearOpMode {
 
         while (opModeIsActive()) {
 
-
-
             /**
              * See if any of the instances of {@link relicTemplate} are currently visible.
              * {@link RelicRecoveryVuMark} is an enum which can have the following values:
@@ -160,12 +158,30 @@ public class ConceptVuMarkIdentification extends LinearOpMode {
                     double rX = rot.firstAngle;
                     double rY = rot.secondAngle;
                     double rZ = rot.thirdAngle;
+
+                    if (vuMark!= RelicRecoveryVuMark.LEFT) {
+                        DriveLeftRear.setPower(1);
+                        DriveRightRear.setPower(1);
+                    }
+
+                    if (vuMark!= RelicRecoveryVuMark.CENTER) {
+                        DriveLeftRear.setPower(1);
+                        DriveRightRear.setPower(-1);
+                    }
+
+                    if (vuMark!= RelicRecoveryVuMark.RIGHT) {
+                        DriveLeftRear.setPower(-1);
+                        DriveRightRear.setPower(-1);
+                    }
+
+                    if (vuMark!= RelicRecoveryVuMark.UNKNOWN) {
+                        DriveLeftRear.setPower(0);
+                        DriveRightRear.setPower(0);
+                    }
                 }
             }
             else {
                 telemetry.addData("VuMark", "not visible");
-
-
             }
 
             telemetry.update();

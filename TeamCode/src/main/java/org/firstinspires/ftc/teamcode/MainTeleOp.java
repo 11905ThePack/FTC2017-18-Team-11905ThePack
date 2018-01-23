@@ -5,13 +5,14 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
+import com.qualcomm.robotcore.hardware.GyroSensor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="TankDrive", group="Drive-Type OpModes")
+@TeleOp(name="MainTeleOp", group="Drive-Type OpModes")
 
-public class Tank_Drive extends OpMode
+public class MainTeleOp extends OpMode
 {
     // Declare OpMode variables for use.
     //All servo variables are in DEGREES.
@@ -23,6 +24,7 @@ public class Tank_Drive extends OpMode
     private DcMotor DriveLeftRear = null; //Left Rear Motor
     private DcMotor DriveRightRear = null; //Right Rear Motor
 
+    private DcMotor MotorGlyphGrabber = null;
     private DcMotor MotorRelicExtension = null; //Relic Extension Motor
 
     private Servo GlyphServoLeft = null; //Left half of glyph grabber
@@ -30,8 +32,11 @@ public class Tank_Drive extends OpMode
     private Servo RelicServoFront = null; //Front half of the Relic Grabber
     private Servo RelicServoBack = null; //Back half of the Relic Grabber
     private Servo RelicServoPitch = null; //Relic Grabber Rotation
+    private Servo JewelWhackerServo = null; //Jewel Whacker Servo
+
 
     private DeviceInterfaceModule DeviceIM;
+    private GyroSensor Gyro = null; // Das ist die Gyro
 
     //These outline the starting positions of all of the servos, as well as the range they're allowed to work in.
     //This is in degrees.
@@ -40,6 +45,7 @@ public class Tank_Drive extends OpMode
     private double servoRelicServoFrontPosition = 45;
     private double servoRelicServoBackPosition = 80;
     private double servoRelicServoPitchPosition = 0;
+    private double servoJewelWhackerServoPosition = 0;
     private final static double servoMinRange  = 1;
     private final static double servoMaxRange  = 180;
     private double motorSpeedMultiplier = .6;
@@ -66,14 +72,26 @@ public class Tank_Drive extends OpMode
         MotorRelicExtension.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         MotorRelicExtension.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        //Init MotorGlyphGrabber
+        MotorGlyphGrabber = hardwareMap.get(DcMotor.class, "MotorGlyphGrabber");
+        MotorGlyphGrabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        MotorGlyphGrabber.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        //InitGlyphServos
         GlyphServoLeft = hardwareMap.get(Servo.class, "GlyphServoLeft");
         GlyphServoRight = hardwareMap.get(Servo.class, "GlyphServoRight");
 
+        //InitRelicServos
         RelicServoPitch = hardwareMap.get(Servo.class, "RelicServoPitch");
         RelicServoFront = hardwareMap.get(Servo.class, "RelicServoFront");
         RelicServoBack = hardwareMap.get(Servo.class, "RelicServoBack");
 
+        //Init Misc Devices
+
         DeviceIM = hardwareMap.get(DeviceInterfaceModule.class, "DIM");
+        Gyro = hardwareMap.get(GyroSensor.class, "Gyro");
+
+        JewelWhackerServo = hardwareMap.get(Servo.class, "JewelWhackerServo");
 
 
         // Tell the driver that initialization is complete.
@@ -93,6 +111,7 @@ public class Tank_Drive extends OpMode
     public void start() {
         //Code to run ONCE when the driver hits PLAY
         runtime.reset();
+        Gyro.calibrate();
     }
 
 
@@ -102,6 +121,9 @@ public class Tank_Drive extends OpMode
 
         // Setup a variable for each drive wheel and servos to save power level for telemetry.
         double RelicGrabberExtensionPos = MotorRelicExtension.getCurrentPosition();
+        double MotorGlyphGrabberPos = MotorGlyphGrabber.getCurrentPosition();
+        int GyroPos = Gyro.getHeading();
+
 
         // Init some local variables.
         String consoleOut = "Nothing Yet";
@@ -124,7 +146,7 @@ public class Tank_Drive extends OpMode
         }
 
         if (gamepad1.b) {
-            motorSpeedMultiplier = .1;
+            motorSpeedMultiplier = .2;
             DeviceIM.setLED(1, true);
         }
 
@@ -184,6 +206,8 @@ public class Tank_Drive extends OpMode
         servoRelicServoPitchPosition = Range.clip(servoRelicServoPitchPosition, servoMinRange, servoMaxRange);
         RelicServoPitch.setPosition(servoRelicServoPitchPosition / 180);
 
+        servoJewelWhackerServoPosition = Range.clip(servoJewelWhackerServoPosition, servoMinRange, servoMaxRange);
+        JewelWhackerServo.setPosition(servoJewelWhackerServoPosition / 180);
 
         // Send calculated power to wheels.
         DriveLeftFront.setPower(v1 * motorSpeedMultiplier);
@@ -198,9 +222,10 @@ public class Tank_Drive extends OpMode
 
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Running, Run Time: " + runtime.toString());
-        //telemetry.addData("FrontMotors:", "%.2f", DriveLeftFront, DriveRightFront);
-        //telemetry.addData("RearMotors:", "%.2f", DriveLeftRear, DriveRightRear);
-        //telemetry.addData("RelicGrabberExtensionPos", "Position: %.2f", RelicGrabberExtensionPos);
+        telemetry.addData("FrontMotors:", DriveLeftFront.toString() + DriveRightFront.toString());
+        telemetry.addData("RearMotors:", DriveLeftRear.toString(), DriveRightRear.toString());
+        telemetry.addData("RelicGrabberExtensionPos", "Position:" + RelicGrabberExtensionPos);
+        telemetry.addData("MotorGlyphGrabberPos", "Position:" + MotorGlyphGrabberPos);
         telemetry.addData( "Motor Speed","%.2f", motorSpeedMultiplier);
         telemetry.addData( "Console Out", consoleOut);
     }
