@@ -69,7 +69,7 @@ public class AutoOp_Encoder extends LinearOpMode {
         encoderDrive(DRIVE_SPEED, 2, 2, 5.0);  // S1: Forward 2 Inches with 5 Sec timeout
         encoderDrive(TURN_SPEED, 2, -2, 4.0);  // S2: Turn Right 2 Inches with 4 Sec timeout
         encoderDrive(DRIVE_SPEED, 4, 4, 4.0);  // S3: Reverse 4 Inches with 4 Sec timeout
-        encoderDrive(TRANSLATE_SPEED);
+        encoderDrive(TRANSLATE_SPEED, 2,2,4);
 
     }
 
