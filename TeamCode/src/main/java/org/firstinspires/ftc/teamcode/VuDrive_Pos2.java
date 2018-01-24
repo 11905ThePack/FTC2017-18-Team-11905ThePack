@@ -63,9 +63,9 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * is explained in {@link}.
  */
 
-@Autonomous(name="Concept: VuDrive Id1 ", group ="Concept")
+@Autonomous(name="Concept: VuDrive Id2 ", group ="Concept")
 //@Disabled
-public class VuDrive_Pos1 extends LinearOpMode {
+public class VuDrive_Pos2 extends LinearOpMode {
 
     public static final String TAG = "Vuforia VuMark Sample";
 
@@ -142,12 +142,13 @@ public class VuDrive_Pos1 extends LinearOpMode {
                 if (vuMark != RelicRecoveryVuMark.LEFT) {
 
                     encoderDrive(DRIVE_SPEED,36,36,2);
-                    encoderDrive(TURN_SPEED,3,-3,2);
+                    encoderDrive(TURN_SPEED,-3,3,2);
                     encoderDrive(DRIVE_SPEED,12,12,2);
                     encoderDrive(TURN_SPEED,3,-3,2);
                     encoderDrive(DRIVE_SPEED,6,6,2);
                     encoderDrive(TURN_SPEED,3,-3,2);
                     encoderDrive(DRIVE_SPEED,1,1,2);
+
 
 
                 }
@@ -155,7 +156,7 @@ public class VuDrive_Pos1 extends LinearOpMode {
                 if (vuMark != RelicRecoveryVuMark.CENTER) {
 
                     encoderDrive(DRIVE_SPEED,36,36,2);
-                    encoderDrive(TURN_SPEED,3,-3,2);
+                    encoderDrive(TURN_SPEED,-3,3,2);
                     encoderDrive(DRIVE_SPEED,12,12,2);
 
                 }
@@ -163,12 +164,14 @@ public class VuDrive_Pos1 extends LinearOpMode {
                 if (vuMark != RelicRecoveryVuMark.RIGHT) {
 
                     encoderDrive(DRIVE_SPEED,36,36,2);
-                    encoderDrive(TURN_SPEED,3,-3,2);
+                    encoderDrive(TURN_SPEED,-3,3,2);
                     encoderDrive(DRIVE_SPEED,12,12,2);
                     encoderDrive(TURN_SPEED,3,-3,2);
                     encoderDrive(DRIVE_SPEED,6,6,2);
                     encoderDrive(TURN_SPEED,-3,3,2);
                     encoderDrive(DRIVE_SPEED,1,1,2);
+
+
 
                 }
 
