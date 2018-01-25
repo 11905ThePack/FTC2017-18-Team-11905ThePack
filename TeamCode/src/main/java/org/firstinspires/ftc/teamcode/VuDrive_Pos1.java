@@ -229,6 +229,8 @@ public class VuDrive_Pos1 extends LinearOpMode {
             //runtime.reset();
             DriveLeftRear.setPower(Math.abs(speed));
             DriveRightRear.setPower(Math.abs(speed));
+            DriveLeftFront.setPower(Math.abs(speed));
+            DriveRightFront.setPower(Math.abs(speed));
 
 
             while (opModeIsActive() &&
