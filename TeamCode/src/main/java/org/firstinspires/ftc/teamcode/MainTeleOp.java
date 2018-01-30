@@ -133,7 +133,7 @@ public class MainTeleOp extends OpMode
         //POV Mode. One stick controls translation and one controls rotation.
         double r = Math.hypot((gamepad1.left_stick_x * 2.5), gamepad1.left_stick_y);
         double robotAngle = Math.atan2(-gamepad1.left_stick_y, (gamepad1.left_stick_x * 2.5)) - Math.PI / 4;
-        double rightX = (gamepad1.right_stick_x * .65);
+        double rightX = (gamepad1.right_stick_x * .7);
         final double v1 = r * Math.cos(robotAngle) + rightX;
         final double v2 = r * Math.sin(robotAngle) - rightX;
         final double v3 = r * Math.sin(robotAngle) + rightX;
@@ -282,11 +282,15 @@ public class MainTeleOp extends OpMode
 
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Running, Run Time: " + runtime.toString());
-        //telemetry.addData("FrontMotors", "Left: " + DriveLeftFrontPos, "Right: " + DriveRightFrontPos);
-        //telemetry.addData("RearMotors", "Left: "+ DriveLeftRearPos, "Right: " + DriveRightRearPos);
+
+        telemetry.addData("FrontMotors", "Left: " + DriveLeftFrontPos);
+        telemetry.addData("FrontMotors", "Right: " + DriveRightFrontPos);
+        telemetry.addData("RearMotors", "Left: "+ DriveLeftRearPos);
+        telemetry.addData("RearMotors", "Right: " + DriveRightRearPos);
+
         telemetry.addData("RelicGrabberExtensionPos", RelicGrabberExtensionPos);
         telemetry.addData("MotorGlyphGrabberPos", MotorGlyphGrabberPos);
-        telemetry.addData("GyroPos", GyroPos);
+        telemetry.addData("GyroPos:", GyroPos);
         telemetry.addData( "Motor Speed","%.2f", motorSpeedMultiplier);
         telemetry.addData( "Console Out", consoleOut);
     }
@@ -301,4 +305,3 @@ public class MainTeleOp extends OpMode
     }
 
 }
-//Leteral Cancer
