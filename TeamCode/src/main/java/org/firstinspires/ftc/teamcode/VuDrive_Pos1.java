@@ -26,62 +26,73 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-
 package org.firstinspires.ftc.teamcode;
-
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.GyroSensor;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.robotcore.external.ClassFactory;
+import org.firstinspires.ftc.robotcore.external.matrices.OpenGLMatrix;
+import org.firstinspires.ftc.robotcore.external.matrices.VectorF;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.robotcore.external.navigation.RelicRecoveryVuMark;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaLocalizer;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackable;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackableDefaultListener;
+import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
 
-@Autonomous(name="AutoOp_Pos2")
+/**
+ * This OpMode illustrates the basics of using the Vuforia engine to determine
+ * the identity of Vuforia VuMarks encountered on the field. The code is structured as
+ * a LinearOpMode. It shares much structure with {}; we do not here
+ * duplicate the core Vuforia documentation found there, but rather instead focus on the
+ * differences between the use of Vuforia for navigation vs VuMark identification.
+ *
+ * @see VuforiaLocalizer
+ * @see VuforiaTrackableDefaultListener
+ * see  ftc_app/doc/tutorial/FTC_FieldCoordinateSystemDefinition.pdf
+ *
+ * Use Android Studio to Copy this Class, and Paste it into your team's code folder with a new name.
+ * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list.
+ *
+ * IMPORTANT: In order to use this OpMode, you need to obtain your own Vuforia license key as
+ * is explained in {@link}.
+ */
 
-public class AutoOp_Pos2 extends LinearOpMode {
+@Autonomous(name="Concept: VuMark Id3 ", group ="Concept")
+//@Disabled
+public class VuDrive_Pos1 extends LinearOpMode {
 
-    private ElapsedTime runtime = new ElapsedTime(); //Elapsed Time
+    public static final String TAG = "Vuforia VuMark Sample";
 
     private DcMotor DriveLeftFront = null; //Left Front Motor
     private DcMotor DriveRightFront = null; //Right Front Motor
     private DcMotor DriveLeftRear = null; //Left Rear Motor
-    private DcMotor DriveRightRear = null; //Right Rear Motor
-
-    private DcMotor MotorRelicExtension = null; //Relic Extension Motor
-
-    private ColorSensor ColourSensor1 = null; //ColourSensor FrontLeft
-    private ColorSensor ColourSensor2 = null; //ColourSensor Front Right
-    private ColorSensor ColourSensorJewel = null; //ColourSensor Jewel Knocker
-
-    private Servo GlyphServoLeft = null; //Left half of glyph grabber
-    private Servo GlyphServoRight = null; //Right half of glyph grabber
-    private Servo RelicServoFront = null; //Front half of the Relic Grabber
-    private Servo RelicServoBack = null; //Back half of the Relic Grabber
-    private Servo RelicServoPitch = null; //Relic Grabber Rotation
-    private Servo JewelWhackerServo = null; //Jewel Whacker Servo
-
-    private GyroSensor Gyro = null; // Das ist die Gyro
-
-
 
     static final double COUNTS_PER_MOTOR_REV = 1000;
-    static final double DRIVE_GEAR_REDUCTION = 1.0;
+    private DcMotor DriveRightRear = null; //Right Rear Motor
+    static final double DRIVE_GEAR_REDUCTION = 2.0;
     static final double WHEEL_DIAMETER_INCHES = 4.0;  // For finding circumference
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
     static final double DRIVE_SPEED = 0.6;
     static final double TURN_SPEED = 0.5;
+    static final double TRANSLATE_SPEED = 0.55;
 
-    @Override
 
-    public void runOpMode() {
 
-        GlyphServoLeft = hardwareMap.get(Servo.class, "GlyphServoLeft");
-        GlyphServoRight = hardwareMap.get(Servo.class, "GlyphServoRight");
+
+
+    OpenGLMatrix lastLocation = null;
+
+    VuforiaLocalizer vuforia;
+
+    @Override public void runOpMode() {
+
 
         DriveLeftRear = hardwareMap.get(DcMotor.class, "DriveLeftRear");
         DriveRightRear = hardwareMap.get(DcMotor.class, "DriveRightRear");
@@ -98,38 +109,83 @@ public class AutoOp_Pos2 extends LinearOpMode {
         DriveLeftFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         DriveRightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        VuforiaLocalizer.Parameters parameters = new VuforiaLocalizer.Parameters(cameraMonitorViewId);
+
+
+        parameters.vuforiaLicenseKey = "AXP04Yz/////AAAAGThpXmXBV06voC5uPNdROCVgdOGJ12EoM411qfUt/jRG2l29n2mFd8m38+Pe+njHWXRsIxU9orFJXA4KO2wOcZBruxk3+hY1C3bUCCwbCN0ngMkkiioI5UuKDxWwNpL/qmMPS2SUg6a6xV5J680p5Yxjh6W5TNLpSyX+vdhc9hlkSrzWJPvrm3TYAt06+ox5OVen6tPW/6uSG9TYbCCsx5HKAu/dVzM1lJWzgF/kxXQaRDEck9k1lZp2Y4kyZadvHuWuDg2+EujNPzA9aST8ajxcARP/EjQM+5+hkvAPqHkRPYiZHf1dFZwy6B3e5+d72F1hsFvUYnrUtqOdXwt1KFENNQ+4ZpL622V2NK7ZA1x8";
+
+        parameters.cameraDirection = VuforiaLocalizer.CameraDirection.BACK;
+        this.vuforia = ClassFactory.createVuforiaLocalizer(parameters);
+
+        VuforiaTrackables relicTrackables = this.vuforia.loadTrackablesFromAsset("RelicVuMark");
+        VuforiaTrackable relicTemplate = relicTrackables.get(0);
+        relicTemplate.setName("relicVuMarkTemplate"); // can help in debugging; otherwise not necessary
+
+        telemetry.addData(">", "Press Play to start");
+        telemetry.update();
+
         waitForStart();
 
-        if (vuMark != RelicRecoveryVuMark.LEFT) {
+        relicTrackables.activate();
 
-            encoderDrive(DRIVE_SPEED,36,36,1); //S1
-            encoderDrive(TURN_SPEED, -3, 3, 1); //S2
-            encoderDrive(DRIVE_SPEED,12,12,1); //S3
+        while (opModeIsActive()) {
 
+            RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
+            if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
+
+                telemetry.addData("VuMark", "%s visible", vuMark);
+
+                OpenGLMatrix pose = ((VuforiaTrackableDefaultListener)relicTemplate.getListener()).getPose();
+                telemetry.addData("Pose", format(pose));
+
+
+                if (vuMark != RelicRecoveryVuMark.LEFT) {
+
+                    encoderDrive(DRIVE_SPEED,);
+
+                }
+
+                if (vuMark != RelicRecoveryVuMark.CENTER) {
+
+
+
+                }
+
+                if (vuMark != RelicRecoveryVuMark.RIGHT) {
+
+
+
+                }
+
+                if (pose != null) {
+                    VectorF trans = pose.getTranslation();
+                    Orientation rot = Orientation.getOrientation(pose, AxesReference.EXTRINSIC, AxesOrder.XYZ, AngleUnit.DEGREES);
+
+                    double tX = trans.get(0);
+                    double tY = trans.get(1);
+                    double tZ = trans.get(2);
+
+                    // Extract the rotational components of the target relative to the robot
+                    double rX = rot.firstAngle;
+                    double rY = rot.secondAngle;
+                    double rZ = rot.thirdAngle;
+                }
+            }
+            else {
+                telemetry.addData("VuMark", "not visible");
+
+
+            }
+
+            telemetry.update();
         }
-
-        if (vuMark != RelicRecoveryVuMark.CENTER) {
-
-            encoderDrive(DRIVE_SPEED,36,36,1); //S1
-            encoderDrive(TURN_SPEED, -3, 3, 1); //S2
-            encoderDrive(DRIVE_SPEED,12,12,1); //S3
-
-
-        }
-
-        if (vuMark != RelicRecoveryVuMark.RIGHT) {
-
-            encoderDrive(DRIVE_SPEED,36,36,1); //S1
-            encoderDrive(TURN_SPEED, -3, 3, 1); //S2
-            encoderDrive(DRIVE_SPEED,12,12,1); //S3
-
-
-
-        }
-
     }
 
-
+    String format(OpenGLMatrix transformationMatrix) {
+        return (transformationMatrix != null) ? transformationMatrix.formatAsTransform() : "null";
+    }
 
     public void encoderDrive(double speed,
                              double leftInches, double rightInches,

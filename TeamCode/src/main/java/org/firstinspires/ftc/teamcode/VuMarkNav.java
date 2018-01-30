@@ -63,7 +63,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.VuforiaTrackables;
  * is explained in {@link}.
  */
 
-@Autonomous(name="Concept: VuMark Id", group ="Concept")
+@Autonomous(name="Concept: VuMark Id3 ", group ="Concept")
 //@Disabled
 public class VuMarkNav extends LinearOpMode {
 
@@ -72,10 +72,10 @@ public class VuMarkNav extends LinearOpMode {
     private DcMotor DriveLeftFront = null; //Left Front Motor
     private DcMotor DriveRightFront = null; //Right Front Motor
     private DcMotor DriveLeftRear = null; //Left Rear Motor
-    private DcMotor DriveRightRear = null; //Right Rear Motor
 
     static final double COUNTS_PER_MOTOR_REV = 1000;
-    static final double DRIVE_GEAR_REDUCTION = 1.0;
+    private DcMotor DriveRightRear = null; //Right Rear Motor
+    static final double DRIVE_GEAR_REDUCTION = 2.0;
     static final double WHEEL_DIAMETER_INCHES = 4.0;  // For finding circumference
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
