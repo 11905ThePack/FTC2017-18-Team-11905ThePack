@@ -156,32 +156,7 @@ public class MainTeleOp extends OpMode
             servoGlyphRightPosition = 0 - -gamepad2.right_stick_x * 180;
         }
 
-        //This is an experiment, but we haven't decided to integrate it.
-        if (DriveMode){
-        } else {
-        }
-
-        double v5 = gamepad2.left_stick_y * 0.15;
-
-        if (gamepad2.dpad_up) {
-            consoleOut = "Extending Relic Grabber To Maximum Length";
-            servoRelicServoPitchPosition = 150;
-            Extending = true;
-            Retracting = false;
-        }
-
-        if (gamepad2.dpad_down) {
-            consoleOut = "Stopped Relic Grabber Extension/Retraction";
-            Extending = false;
-            Retracting = false;
-        }
-
-        if (gamepad2.dpad_left) {
-            consoleOut = "Returning Relic Extension";
-            Extending = false;
-            Retracting = true;
-        }
-
+        //This is an experiment, but we haven't decided to integrate it, yet.
         if (gamepad2.dpad_right) {
             if (DriveMode){
                 DriveMode = true;
@@ -192,40 +167,65 @@ public class MainTeleOp extends OpMode
             }
         }
 
-        //Toggle the Right Stick controlling the glyph grabber servos.
-        if (gamepad2.right_stick_button) {
-            if (UseServoStick) {
-                UseServoStick = false;
-            } else UseServoStick = true;
+        if (DriveMode){
+            if (gamepad2.dpad_up) {
+                consoleOut = "Extending Relic Grabber To Maximum Length";
+                servoRelicServoPitchPosition = 150;
+                Extending = true;
+                Retracting = false;
+            }
+
+            if (gamepad2.dpad_down) {
+                consoleOut = "Stopped Relic Grabber Extension/Retraction";
+                Extending = false;
+                Retracting = false;
+            }
+
+            if (gamepad2.dpad_left) {
+                consoleOut = "Returning Relic Extension";
+                Extending = false;
+                Retracting = true;
+            }
+
+            if (gamepad2.a) {
+                servoRelicServoPitchPosition = 0;
+            }
+
+            if (gamepad2.b) {
+                servoRelicServoPitchPosition = 180;
+            }
+
+            if (gamepad2.x) {
+                servoRelicServoFrontPosition = 145;
+                servoRelicServoBackPosition = 90;
+            }
+
+            if (gamepad2.y) {
+                servoRelicServoFrontPosition = 35;
+                servoRelicServoBackPosition = 90;
+            }
+        }
+        else {
+
+            //Toggle the Right Stick controlling the glyph grabber servos.
+            if (gamepad2.right_stick_button) {
+                if (UseServoStick) {
+                    UseServoStick = false;
+                } else UseServoStick = true;
+            }
+
+            if (gamepad2.left_bumper) {
+                servoGlyphLeftPosition = 90;
+                servoGlyphRightPosition = 90;
+            }
+
+            if (gamepad2.right_bumper) {
+                servoGlyphLeftPosition = 70;
+                servoGlyphRightPosition = 110;
+            }
         }
 
-        if (gamepad2.left_bumper) {
-            servoGlyphLeftPosition = 90;
-            servoGlyphRightPosition = 90;
-        }
-
-        if (gamepad2.right_bumper) {
-            servoGlyphLeftPosition = 70;
-            servoGlyphRightPosition = 110;
-        }
-
-        if (gamepad2.a) {
-            servoRelicServoPitchPosition = 0;
-        }
-
-        if (gamepad2.b) {
-            servoRelicServoPitchPosition = 180;
-        }
-
-        if (gamepad2.x) {
-            servoRelicServoFrontPosition = 145;
-            servoRelicServoBackPosition = 90;
-        }
-
-        if (gamepad2.y) {
-            servoRelicServoFrontPosition = 35;
-            servoRelicServoBackPosition = 90;
-        }
+        double v5 = gamepad2.left_stick_y * 0.15;
 
         // Set Servo positions to variable "servoPosition"(s)
         servoGlyphLeftPosition = Range.clip(servoGlyphLeftPosition, 0, 180); //Clips servo range into usable area. Protects from over extension.
