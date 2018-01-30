@@ -48,8 +48,8 @@ public class MainTeleOp extends OpMode
     private double servoJewelWhackerServoPosition = 5;
     private final static double servoMinRange  = 1;
     private final static double servoMaxRange  = 180;
-    private double motorSpeedMultiplier = .55;
-    String consoleOut = "Nothing Yet";
+    private double motorSpeedMultiplier = .2;
+    private String consoleOut = "Nothing Yet";
 
     @Override
     public void init() {
@@ -114,8 +114,10 @@ public class MainTeleOp extends OpMode
         Gyro.calibrate();
     }
 
-    boolean Extending = false;
-    boolean Retracting = false;
+    private boolean Extending = false;
+    private boolean Retracting = false;
+    private boolean UseServoStick = true;
+    private boolean DriveMode = false; //False is for Glyphs, True is for Relic
     @Override
     public void loop() {
         //Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
@@ -127,32 +129,38 @@ public class MainTeleOp extends OpMode
         // Init some local variables.
 
         //Gamepad 1 Controls
-        // POV Mode writ0ten by dmssargent, sourced from the FTC Forum.
+        // Original POV Mode written by dmssargent, sourced from the FTC Forum. Modified for use with our robot.
         //POV Mode. One stick controls translation and one controls rotation.
-        double r = Math.hypot(gamepad1.left_stick_x, gamepad1.left_stick_y);
-        double robotAngle = Math.atan2(-gamepad1.left_stick_y, gamepad1.left_stick_x) - Math.PI / 4;
-        double rightX = gamepad1.right_stick_x;
+        double r = Math.hypot((gamepad1.left_stick_x * 2.5), gamepad1.left_stick_y);
+        double robotAngle = Math.atan2(-gamepad1.left_stick_y, (gamepad1.left_stick_x * 2.5)) - Math.PI / 4;
+        double rightX = (gamepad1.right_stick_x * .65);
         final double v1 = r * Math.cos(robotAngle) + rightX;
         final double v2 = r * Math.sin(robotAngle) - rightX;
         final double v3 = r * Math.sin(robotAngle) + rightX;
         final double v4 = r * Math.cos(robotAngle) - rightX;
 
         if (gamepad1.a) {
-            motorSpeedMultiplier = .55;
+            motorSpeedMultiplier = .2;
             DeviceIM.setLED(1, false);
         }
 
         if (gamepad1.b) {
-            motorSpeedMultiplier = .2;
+            motorSpeedMultiplier = .55;
             DeviceIM.setLED(1, true);
         }
 
         //Gamepad 2 Controls
+        //There will be a button to disable the stick for controlling the servo.
+        if (UseServoStick) {
+            servoGlyphLeftPosition = 180 - gamepad2.right_stick_x * 180;
+            servoGlyphRightPosition = 0 - -gamepad2.right_stick_x * 180;
+        }
 
-        servoGlyphLeftPosition = 180 - gamepad2.right_stick_x * 180;
-        servoGlyphRightPosition = 0 - -gamepad2.right_stick_x * 180;
+        if (DriveMode){
+        } else {
+        }
+
         double v5 = gamepad2.left_stick_y * 0.15;
-
 
         if (gamepad2.dpad_up) {
             consoleOut = "Extending Relic Grabber To Maximum Length";
@@ -162,7 +170,7 @@ public class MainTeleOp extends OpMode
         }
 
         if (gamepad2.dpad_down) {
-            consoleOut = "Stopped Relic Grabber Extension";
+            consoleOut = "Stopped Relic Grabber Extension/Retraction";
             Extending = false;
             Retracting = false;
         }
@@ -171,6 +179,33 @@ public class MainTeleOp extends OpMode
             consoleOut = "Returning Relic Extension";
             Extending = false;
             Retracting = true;
+        }
+
+        if (gamepad2.dpad_right) {
+            if (DriveMode){
+                DriveMode = true;
+                consoleOut = "Set Drive Mode to Relic Mode";
+            } else {
+                DriveMode = false;
+                consoleOut = "Set Drive Mode to Glyph Mode";
+            }
+        }
+
+        //Toggle the Right Stick controlling the glyph grabber servos.
+        if (gamepad2.right_stick_button) {
+            if (UseServoStick) {
+                UseServoStick = false;
+            } else UseServoStick = true;
+        }
+
+        if (gamepad2.left_bumper) {
+            servoGlyphLeftPosition = 90;
+            servoGlyphRightPosition = 90;
+        }
+
+        if (gamepad2.right_bumper) {
+            servoGlyphLeftPosition = 70;
+            servoGlyphRightPosition = 110;
         }
 
         if (gamepad2.a) {
@@ -182,16 +217,16 @@ public class MainTeleOp extends OpMode
         }
 
         if (gamepad2.x) {
-            servoRelicServoFrontPosition = 160;
-            servoRelicServoBackPosition = 15;
+            servoRelicServoFrontPosition = 145;
+            servoRelicServoBackPosition = 90;
         }
 
         if (gamepad2.y) {
+            servoRelicServoFrontPosition = 35;
             servoRelicServoBackPosition = 90;
-            servoRelicServoFrontPosition = 90;
         }
 
-        // Set Servo position to variable "servoPosition"
+        // Set Servo positions to variable "servoPosition"(s)
         servoGlyphLeftPosition = Range.clip(servoGlyphLeftPosition, 0, 180); //Clips servo range into usable area. Protects from over extension.
         GlyphServoLeft.setPosition(servoGlyphLeftPosition / 180); //This converts from degrees into 0-1 automagically.
 
@@ -210,7 +245,7 @@ public class MainTeleOp extends OpMode
         servoJewelWhackerServoPosition = Range.clip(servoJewelWhackerServoPosition, servoMinRange, servoMaxRange);
         JewelWhackerServo.setPosition(servoJewelWhackerServoPosition / 180);
 
-        // Send calculated power to wheels (There aren't any calculations done, this is pretty much extra at the moment.)
+        // Send calculated power to wheels
         DriveLeftFront.setPower(v1 * motorSpeedMultiplier);
         DriveRightFront.setPower(v2 * motorSpeedMultiplier);
         DriveLeftRear.setPower(v3 * motorSpeedMultiplier);
@@ -226,10 +261,10 @@ public class MainTeleOp extends OpMode
 
         //Automated Relic Extension/Retraction
         if (Extending) {
-            if (MotorRelicExtension.getCurrentPosition() > 7400) {
+            if (MotorRelicExtension.getCurrentPosition() > 7600) {
                 MotorRelicExtension.setPower(0);
             } else {
-                MotorRelicExtension.setPower(.15);
+                MotorRelicExtension.setPower(.25);
             }
         }
 
@@ -247,8 +282,8 @@ public class MainTeleOp extends OpMode
 
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Running, Run Time: " + runtime.toString());
-        telemetry.addData("FrontMotors", "Left: " + DriveLeftFrontPos, "Right: " + DriveRightFrontPos);
-        telemetry.addData("RearMotors", "Left: "+ DriveLeftRearPos, "Right: " + DriveRightRearPos);
+        //telemetry.addData("FrontMotors", "Left: " + DriveLeftFrontPos, "Right: " + DriveRightFrontPos);
+        //telemetry.addData("RearMotors", "Left: "+ DriveLeftRearPos, "Right: " + DriveRightRearPos);
         telemetry.addData("RelicGrabberExtensionPos", RelicGrabberExtensionPos);
         telemetry.addData("MotorGlyphGrabberPos", MotorGlyphGrabberPos);
         telemetry.addData("GyroPos", GyroPos);
@@ -266,3 +301,4 @@ public class MainTeleOp extends OpMode
     }
 
 }
+//Leteral Cancer

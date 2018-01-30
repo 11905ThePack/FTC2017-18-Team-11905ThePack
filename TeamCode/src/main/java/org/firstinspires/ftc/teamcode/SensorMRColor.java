@@ -53,7 +53,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 //@Disabled
 public class SensorMRColor extends LinearOpMode {
 
-  ColorSensor colorSensor;    // Hardware Device Object
+  ColorSensor colorSensor;
 
 
   @Override
@@ -124,7 +124,17 @@ public class SensorMRColor extends LinearOpMode {
         }
       });
 
+      if (colorSensor.red()<=3) {
+
+        telemetry.addData("Bleh", "Red");
+
+      }
+      else {
+        telemetry.addData("Bleh","blue");
+      }
+
       telemetry.update();
+
     }
 
     // Set the panel back to the default color
