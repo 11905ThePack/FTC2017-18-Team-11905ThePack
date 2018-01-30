@@ -191,7 +191,7 @@ public class MainTeleOp extends OpMode
             }
         }
 
-        //Toggle the Right Stick controlling the glyph grabber servos. and death
+        //Toggle the Right Stick controlling the glyph grabber servos.
         if (gamepad2.right_stick_button) {
             if (UseServoStick) {
                 UseServoStick = false;
@@ -301,3 +301,4 @@ public class MainTeleOp extends OpMode
     }
 
 }
+//Leteral Cancer
