@@ -156,11 +156,6 @@ public class MainTeleOp extends OpMode
             servoGlyphRightPosition = 0 - -gamepad2.right_stick_x * 180;
         }
 
-        //This is an experiment, but we haven't decided to integrate it.
-        if (DriveMode){
-        } else {
-        }
-
         double v5 = gamepad2.left_stick_y * 0.15;
 
         if (gamepad2.dpad_up) {
