@@ -114,13 +114,16 @@ public class MainTeleOp extends OpMode
         Gyro.calibrate();
     }
 
+    //Init some variables.
     private boolean Extending = false;
     private boolean Retracting = false;
     private boolean UseServoStick = true;
     private boolean DriveMode = false; //False is for Glyphs, True is for Relic
+
     @Override
     public void loop() {
         //Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
+
 
         // Setup a variable for each drive wheel and servos to save power level for telemetry.
         double RelicGrabberExtensionPos = MotorRelicExtension.getCurrentPosition();
