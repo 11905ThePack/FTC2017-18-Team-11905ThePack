@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
@@ -48,8 +47,8 @@ public class AutoOp_Pos1 extends LinearOpMode {
     private DcMotor DriveRightRear = null;
     private DcMotor DriveRightFront = null;
 
-    private Servo GlyphServoLeft = null;
-    private Servo GlyphServoRight = null;
+    //private Servo GlyphServoLeft = null;
+    //private Servo GlyphServoRight = null;
 
     private DcMotor MotorGlyphGrabber = null;
 
@@ -57,6 +56,8 @@ public class AutoOp_Pos1 extends LinearOpMode {
 
     private double servoGlyphLeftPosition = 1; //180 degrees
     private double servoGlyphRightPosition = 0;
+
+
 
 
 
@@ -68,8 +69,9 @@ public class AutoOp_Pos1 extends LinearOpMode {
         DriveLeftFront = hardwareMap.get(DcMotor.class, "DriveLeftFront");
         DriveRightRear = hardwareMap.get(DcMotor.class,"DriveRightRear");
         DriveRightFront = hardwareMap.get(DcMotor.class, "DriveRightFront");
-        MotorGlyphGrabber = hardwareMap.get(DcMotor.class," MotorGlyphGrabber");
+        //MotorGlyphGrabber = hardwareMap.get(DcMotor.class,"MotorGlyphGrabber");
 
+        /*
         DriveLeftRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         DriveLeftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         DriveRightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -80,11 +82,20 @@ public class AutoOp_Pos1 extends LinearOpMode {
         DriveRightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         DriveRightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        */
 
-        GlyphServoLeft = hardwareMap.get(Servo.class, "GlyphServoLeft");
-        GlyphServoRight = hardwareMap.get(Servo.class, "GlyphServoRight");
+        //GlyphServoLeft = hardwareMap.get(Servo.class, "GlyphServoLeft");
+        //GlyphServoRight = hardwareMap.get(Servo.class, "GlyphServoRight");
+
 
         waitForStart();
+
+        telemetry.addData("Program Progress","Start");
+        telemetry.update();
+
+        eTime.reset();
+
+        while (eTime.time()<5) {}
 
         DriveLeftRear.setPower(0);
         DriveLeftFront.setPower(0);
@@ -94,26 +105,27 @@ public class AutoOp_Pos1 extends LinearOpMode {
         eTime.reset();
 
         while (eTime.time()<1.0) {}
-
-        GlyphServoLeft.setPosition(80/180);
-        GlyphServoRight.setPosition(100/180);
-        MotorGlyphGrabber.setPower(1);
+/*
+        //GlyphServoLeft.setPosition(80/180);
+        //GlyphServoRight.setPosition(100/180);
+        //MotorGlyphGrabber.setPower(1);
         //LIFT GlYPH HERE
-
+*/
 
         eTime.reset();
 
-        while (eTime.time()<1.3) {}
+        while (eTime.time()<1) {}
 //Drive in Reverse
         DriveLeftRear.setPower(-0.15);
         DriveLeftFront.setPower(-0.15);
         DriveRightRear.setPower(0.15);
         DriveRightFront.setPower(0.15);
-        MotorGlyphGrabber.setPower(0);
+        //MotorGlyphGrabber.setPower(0);
         eTime.reset();
 
-        while (eTime.time()<6) {}
+        while (eTime.time()<1.3) {}
 //Turn 180 degrees
+
         DriveLeftRear.setPower(0.15);
         DriveLeftFront.setPower(0.15);
         DriveRightRear.setPower(0.15);
@@ -121,19 +133,17 @@ public class AutoOp_Pos1 extends LinearOpMode {
 
         eTime.reset();
 //Add drive forward  little bit to put the glyph in the crypto box.
-        while (eTime.time()<0.2) {}
+        while (eTime.time()<4) {}
 
-        DriveLeftRear.setPower(0.15);
+       /* DriveLeftRear.setPower(0.15);
         DriveLeftFront.setPower(0.15);
         DriveRightRear.setPower(-0.15);
         DriveRightFront.setPower(-0.15);
 
         eTime.reset();
 
-        while (eTime.time()<1) {}
-        //Drop Glyph
-        GlyphServoLeft.setPosition(1);
-        GlyphServoRight.setPosition(0);
+        while (eTime.time()) {}
+
 
         eTime.reset();
 
@@ -156,6 +166,8 @@ public class AutoOp_Pos1 extends LinearOpMode {
         DriveRightRear.setPower(0.15);
         DriveRightFront.setPower(0.15);
 
+//comment
+
         eTime.reset();
 
 
@@ -166,6 +178,7 @@ public class AutoOp_Pos1 extends LinearOpMode {
         DriveLeftFront.setPower(0);
         DriveRightRear.setPower(0);
         DriveRightFront.setPower(0);
+        */
 
     }
 }

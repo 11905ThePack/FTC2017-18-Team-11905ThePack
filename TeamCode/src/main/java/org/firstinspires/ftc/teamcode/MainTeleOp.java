@@ -133,18 +133,21 @@ public class MainTeleOp extends OpMode
         //POV Mode. One stick controls translation and one controls rotation.
         double r = Math.hypot((gamepad1.left_stick_x * 2.5), gamepad1.left_stick_y);
         double robotAngle = Math.atan2(-gamepad1.left_stick_y, (gamepad1.left_stick_x * 2.5)) - Math.PI / 4;
-        double rightX = (gamepad1.right_stick_x * .7);
+        double rightX = (gamepad1.right_stick_x * .75);
         final double v1 = r * Math.cos(robotAngle) + rightX;
         final double v2 = r * Math.sin(robotAngle) - rightX;
         final double v3 = r * Math.sin(robotAngle) + rightX;
         final double v4 = r * Math.cos(robotAngle) - rightX;
 
-        if (gamepad1.a) {
+
+
+
+        if (gamepad1.right_trigger > 0.1) {
             motorSpeedMultiplier = .2;
             DeviceIM.setLED(1, false);
         }
 
-        if (gamepad1.b) {
+        if (gamepad1.right_trigger <= 0.1) {
             motorSpeedMultiplier = .55;
             DeviceIM.setLED(1, true);
         }
@@ -156,7 +159,7 @@ public class MainTeleOp extends OpMode
             servoGlyphRightPosition = 0 - -gamepad2.right_stick_x * 180;
         }
 
-        double v5 = gamepad2.left_stick_y * 0.15;
+        double v5 = -gamepad2.left_stick_y * 0.15;
 
         if (gamepad2.dpad_up) {
             consoleOut = "Extending Relic Grabber To Maximum Length";

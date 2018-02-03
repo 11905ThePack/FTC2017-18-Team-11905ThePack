@@ -131,6 +131,11 @@ public class VuDrive_Pos1 extends LinearOpMode {
 
         while (opModeIsActive()) {
 
+            encoderDrive(DRIVE_SPEED,36,36,5);
+            sleep(200);
+            encoderDrive(TURN_SPEED,3,-3,5);
+            encoderDrive(DRIVE_SPEED,12,12,5);
+
             RelicRecoveryVuMark vuMark = RelicRecoveryVuMark.from(relicTemplate);
             if (vuMark != RelicRecoveryVuMark.UNKNOWN) {
 
@@ -140,7 +145,7 @@ public class VuDrive_Pos1 extends LinearOpMode {
                 telemetry.addData("Pose", format(pose));
 
 
-                if (vuMark != RelicRecoveryVuMark.LEFT) {
+                /*if (vuMark != RelicRecoveryVuMark.LEFT) {
 
                     encoderDrive(DRIVE_SPEED,36,36,5); //S1
                     encoderDrive(TURN_SPEED,3,-3,5); //S2
@@ -153,14 +158,10 @@ public class VuDrive_Pos1 extends LinearOpMode {
 
                 }
 
-                if (vuMark != RelicRecoveryVuMark.CENTER) {
+                */
 
-                    encoderDrive(DRIVE_SPEED,36,36,5);
-                    encoderDrive(TURN_SPEED,3,-3,5);
-                    encoderDrive(DRIVE_SPEED,12,12,5);
 
-                }
-
+                /*
                 if (vuMark != RelicRecoveryVuMark.RIGHT) {
 
                     encoderDrive(DRIVE_SPEED,36,36,10);
@@ -172,6 +173,7 @@ public class VuDrive_Pos1 extends LinearOpMode {
                     encoderDrive(DRIVE_SPEED,1,1,10 );
 
                 }
+                */
 
                 if (pose != null) {
                     VectorF trans = pose.getTranslation();
@@ -232,17 +234,19 @@ public class VuDrive_Pos1 extends LinearOpMode {
 
             while (opModeIsActive() &&
                     (runtime.seconds() < timeoutS) &&
-                    (DriveLeftRear.isBusy() && DriveRightRear.isBusy())) {
+                    (DriveLeftRear.isBusy() && DriveRightRear.isBusy() && DriveLeftFront.isBusy() && DriveRightFront.isBusy())) {
 
                 // Display it for the driver.
-                telemetry.addData("Path1", "Running to %7d :%7d", newLeftBackTarget, newRightBackTarget);
+                telemetry.addData("Path1", "Running to %7d :%7d", newLeftBackTarget, newRightBackTarget, newLeftFrontTarget, newRightFrontTarget);
                 telemetry.addData("Path2", "Running at %7d :%7d",
                         DriveLeftRear.getCurrentPosition(),
-                        DriveRightRear.getCurrentPosition());
+                        DriveRightRear.getCurrentPosition(),
+                        DriveLeftFront.getCurrentPosition(),
+                        DriveRightFront.getCurrentPosition());
                 telemetry.update();
 
             // reset the timeout time and start motion.
-            //runtime.reset();
+            runtime.reset();
             DriveLeftRear.setPower(Math.abs(speed));
             DriveRightRear.setPower(Math.abs(speed));
             DriveLeftFront.setPower(Math.abs(speed));

@@ -36,8 +36,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
-
 /*
  *
  * This is an example LinearOpMode that shows how to use
@@ -55,16 +55,24 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 //@Disabled
 public class AutoOp_Jewel extends LinearOpMode {
 
-    ColorSensor colorSensor;
+    ColorSensor JewelWhackerColorSensor;
 
     ElapsedTime eTime = new ElapsedTime();
 
     ElapsedTime eTime2 = new ElapsedTime();
 
-    private DcMotor DriveLeftRear = null;
-    private DcMotor DriveLeftFront = null;
-    private DcMotor DriveRightRear = null;
-    private DcMotor DriveRightFront = null;
+    DcMotor DriveLeftRear;
+    DcMotor DriveRightRear;
+    DcMotor DriveLeftFront;
+    DcMotor DriveRightFront;
+
+    private Servo JewelWhackerServo = null; //Jewel Whacker Servo
+    private Servo GlyphServoLeft = null; //Left half of glyph grabber
+
+    private double servoJewelWhackerServoPosition = 5;
+    private double servoGlyphLeftPosition = 180;
+    private final static double servoMinRange  = 1;  //copied from teleop, probably not useful here
+    private final static double servoMaxRange  = 180;//copied from teleop, probably not useful here
 
 
     @Override
@@ -89,44 +97,70 @@ public class AutoOp_Jewel extends LinearOpMode {
         boolean bLedOn = true;
 
         // get a reference to our ColorSensor object.
-        colorSensor = hardwareMap.get(ColorSensor.class, "JewelWhackerColorSensor");
+        JewelWhackerColorSensor = hardwareMap.get(ColorSensor.class, "JewelWhackerColorSensor");
+        JewelWhackerServo = hardwareMap.get(Servo.class,"JewelWhackerServo");
+
+        DriveLeftRear = hardwareMap.get(DcMotor.class,"DriveLeftRear");
+        DriveRightRear = hardwareMap.get(DcMotor.class,"DriveRightRear");
+        DriveLeftFront = hardwareMap.get(DcMotor.class,"DriveLeftFront");
+        DriveRightFront = hardwareMap.get(DcMotor.class,"DriveRightFront");
 
         // Set the LED in the beginning
-        colorSensor.enableLed(bLedOn);
+        JewelWhackerColorSensor.enableLed(bLedOn);
+
+        servoJewelWhackerServoPosition = 20;
+        JewelWhackerServo.setPosition(servoJewelWhackerServoPosition / 180); //This converts from degrees into 0-1 automagically.
+
 
         // wait for the start button to be pressed.
         waitForStart();
+
+        servoJewelWhackerServoPosition = 95;
+        JewelWhackerServo.setPosition(servoJewelWhackerServoPosition / 180); //This converts from degrees into 0-1 automagically.
 
         // while the op mode is active, loop and read the RGB data.
         // Note we use opModeIsActive() as our loop condition because it is an interruptible method.
         while (opModeIsActive()) {
 
-            // check the status of the x button on either gamepad.
-            while (eTime2.time() < 3)
-                bCurrState = true;
+
+            servoGlyphLeftPosition = 70;
+            GlyphServoLeft.setPosition(servoGlyphLeftPosition / 180); //This converts from degrees into 0-1 automagically.
+
+
             eTime2.reset();
+            while (eTime2.time() < 1) {}
+            bCurrState = true;
+
+            //servoJewelWhackerServoPosition = 40;
+            //JewelWhackerServo.setPosition(servoJewelWhackerServoPosition / 180); //This converts from degrees into 0-1 automagically.
 
 
-            // check for button state transitions.
+            servoGlyphLeftPosition = 40;
+            GlyphServoLeft.setPosition(servoGlyphLeftPosition / 180); //This converts from degrees into 0-1 automagically.
+
+
+            eTime2.reset();
+            while (eTime2.time() < 1) {}
+
+            // sensor state transition
             if (bCurrState && (bCurrState != bPrevState)) {
 
-                // button is transitioning to a pressed state. So Toggle LED
                 bLedOn = !bLedOn;
-                colorSensor.enableLed(bLedOn);
+                JewelWhackerColorSensor.enableLed(bLedOn);
             }
 
             // update previous state variable.
-            bPrevState = bCurrState;
+            //bPrevState = bCurrState;
 
             // convert the RGB values to HSV values.
-            Color.RGBToHSV(colorSensor.red() * 8, colorSensor.green() * 8, colorSensor.blue() * 8, hsvValues);
+            Color.RGBToHSV(JewelWhackerColorSensor.red() * 8, JewelWhackerColorSensor.green() * 8, JewelWhackerColorSensor.blue() * 8, hsvValues);
 
             // send the info back to driver station using telemetry function.
             telemetry.addData("LED", bLedOn ? "On" : "Off");
-            telemetry.addData("Clear", colorSensor.alpha());
-            telemetry.addData("Red  ", colorSensor.red());
-            telemetry.addData("Green", colorSensor.green());
-            telemetry.addData("Blue ", colorSensor.blue());
+            telemetry.addData("Clear", JewelWhackerColorSensor.alpha());
+            telemetry.addData("Red  ", JewelWhackerColorSensor.red());
+            telemetry.addData("Green", JewelWhackerColorSensor.green());
+            telemetry.addData("Blue ", JewelWhackerColorSensor.blue());
             telemetry.addData("Hue", hsvValues[0]);
 
             // change the background color to match the color detected by the RGB sensor.
@@ -139,25 +173,57 @@ public class AutoOp_Jewel extends LinearOpMode {
                 }
             });
 
-            if (colorSensor.red() >= 2) {
+
+            sleep(500);
+
+            if (JewelWhackerColorSensor.red() >= 2) {
 
                 telemetry.addData("Bleh", "Red");
 
-                DriveLeftRear.setPower(-0.2);
-                DriveLeftFront.setPower(-0.2);
-                DriveRightRear.setPower(0.2);
-                DriveRightFront.setPower(0.2);
 
-            } else {
+                while (eTime.time()>2) {
+                    DriveLeftFront.setPower(0.1);
+                    DriveLeftFront.setPower(0.1);
+                    DriveLeftFront.setPower(-0.1);
+                    DriveLeftFront.setPower(-0.1);
+
+                }
+                eTime.reset();
+
+                while (eTime.time()>2) {
+                    DriveLeftFront.setPower(0);
+                    DriveLeftFront.setPower(0);
+                    DriveLeftFront.setPower(0);
+                    DriveLeftFront.setPower(0);
+
+                }
+                eTime.reset();
+
+            } else if (JewelWhackerColorSensor.blue() >= 2){
                 telemetry.addData("Bleh", "blue");
 
-                DriveLeftRear.setPower(0.2);
-                DriveLeftFront.setPower(0.2);
-                DriveRightRear.setPower(0.2);
-                DriveRightFront.setPower(0.2);
+                while (eTime.time()>2) {
+                    DriveLeftFront.setPower(-0.1);
+                    DriveLeftFront.setPower(-0.1);
+                    DriveLeftFront.setPower(0.1);
+                    DriveLeftFront.setPower(0.1);
+
+                }
+                eTime.reset();
+
+                while (eTime.time()>2) {
+                    DriveLeftFront.setPower(0);
+                    DriveLeftFront.setPower(0);
+                    DriveLeftFront.setPower(0);
+                    DriveLeftFront.setPower(0);
+
+                }
+                eTime.reset();
+
+            } else {
+                telemetry.addData("Bleh", "other color");
 
             }
-
 
             telemetry.update();
 

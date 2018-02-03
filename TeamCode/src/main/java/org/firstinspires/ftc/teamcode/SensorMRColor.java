@@ -53,7 +53,7 @@ import com.qualcomm.robotcore.hardware.ColorSensor;
 //@Disabled
 public class SensorMRColor extends LinearOpMode {
 
-  ColorSensor colorSensor;
+  ColorSensor JewelWhackerColorSensor;
 
 
   @Override
@@ -78,10 +78,10 @@ public class SensorMRColor extends LinearOpMode {
     boolean bLedOn = true;
 
     // get a reference to our ColorSensor object.
-    colorSensor = hardwareMap.get(ColorSensor.class, "JewelWhackerColorSensor");
+    JewelWhackerColorSensor = hardwareMap.get(ColorSensor.class, "JewelWhackerColorSensor");
 
     // Set the LED in the beginning
-    colorSensor.enableLed(bLedOn);
+    JewelWhackerColorSensor.enableLed(bLedOn);
 
     // wait for the start button to be pressed.
     waitForStart();
@@ -98,21 +98,21 @@ public class SensorMRColor extends LinearOpMode {
 
         // button is transitioning to a pressed state. So Toggle LED
         bLedOn = !bLedOn;
-        colorSensor.enableLed(bLedOn);
+        JewelWhackerColorSensor.enableLed(bLedOn);
       }
 
       // update previous state variable.
       bPrevState = bCurrState;
 
       // convert the RGB values to HSV values.
-      Color.RGBToHSV(colorSensor.red() * 8, colorSensor.green() * 8, colorSensor.blue() * 8, hsvValues);
+      Color.RGBToHSV(JewelWhackerColorSensor.red() * 8, JewelWhackerColorSensor.green() * 8, JewelWhackerColorSensor.blue() * 8, hsvValues);
 
       // send the info back to driver station using telemetry function.
       telemetry.addData("LED", bLedOn ? "On" : "Off");
-      telemetry.addData("Clear", colorSensor.alpha());
-      telemetry.addData("Red  ", colorSensor.red());
-      telemetry.addData("Green", colorSensor.green());
-      telemetry.addData("Blue ", colorSensor.blue());
+      telemetry.addData("Clear", JewelWhackerColorSensor.alpha());
+      telemetry.addData("Red  ", JewelWhackerColorSensor.red());
+      telemetry.addData("Green", JewelWhackerColorSensor.green());
+      telemetry.addData("Blue ", JewelWhackerColorSensor.blue());
       telemetry.addData("Hue", hsvValues[0]);
 
       // change the background color to match the color detected by the RGB sensor.
@@ -124,7 +124,7 @@ public class SensorMRColor extends LinearOpMode {
         }
       });
 
-      if (colorSensor.red()<=3) {
+      if (JewelWhackerColorSensor.red()<=3) {
 
         telemetry.addData("Bleh", "Red");
 
