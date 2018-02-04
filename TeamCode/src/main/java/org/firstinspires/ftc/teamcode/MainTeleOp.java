@@ -142,12 +142,12 @@ public class MainTeleOp extends OpMode
 
 
 
-        if (gamepad1.right_trigger > 0.1) {
+        if (gamepad1.right_trigger < 0.1) {
             motorSpeedMultiplier = .2;
             DeviceIM.setLED(1, false);
         }
 
-        if (gamepad1.right_trigger <= 0.1) {
+        if (gamepad1.right_trigger >= 0.1) {
             motorSpeedMultiplier = .55;
             DeviceIM.setLED(1, true);
         }

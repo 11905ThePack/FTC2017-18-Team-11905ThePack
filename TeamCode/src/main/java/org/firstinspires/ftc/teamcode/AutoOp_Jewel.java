@@ -28,15 +28,12 @@
  */
 package org.firstinspires.ftc.teamcode;
 
-import android.app.Activity;
-import android.graphics.Color;
-import android.view.View;
-
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 /*
  *
@@ -61,19 +58,20 @@ public class AutoOp_Jewel extends LinearOpMode {
 
     ElapsedTime eTime2 = new ElapsedTime();
 
-    DcMotor DriveLeftRear;
-    DcMotor DriveRightRear;
     DcMotor DriveLeftFront;
+    DcMotor DriveLeftRear;
+
     DcMotor DriveRightFront;
+    DcMotor DriveRightRear;
 
-    private Servo JewelWhackerServo = null; //Jewel Whacker Servo
-    private Servo GlyphServoLeft = null; //Left half of glyph grabber
 
-    private double servoJewelWhackerServoPosition = 5;
+    private Servo JewelWhackerServo; //Jewel Whacker Servo
+    private Servo GlyphServoLeft; //Left half of glyph grabber
+
+    TouchSensor TeamBlueSwitch;
+
+    private double servoJewelWhackerServoPosition = 0;
     private double servoGlyphLeftPosition = 180;
-    private final static double servoMinRange  = 1;  //copied from teleop, probably not useful here
-    private final static double servoMaxRange  = 180;//copied from teleop, probably not useful here
-
 
     @Override
     public void runOpMode() {
@@ -84,31 +82,25 @@ public class AutoOp_Jewel extends LinearOpMode {
         // values is a reference to the hsvValues array.
         final float values[] = hsvValues;
 
-        // get a reference to the RelativeLayout so we can change the background
-        // color of the Robot Controller app to match the hue detected by the RGB sensor.
-        int relativeLayoutId = hardwareMap.appContext.getResources().getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
-        final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(relativeLayoutId);
-
-        // bPrevState and bCurrState represent the previous and current state of the button.
-        boolean bPrevState = false;
-        boolean bCurrState = false;
-
-        // bLedOn represents the state of the LED.
-        boolean bLedOn = true;
-
-        // get a reference to our ColorSensor object.
         JewelWhackerColorSensor = hardwareMap.get(ColorSensor.class, "JewelWhackerColorSensor");
+
+        TeamBlueSwitch = hardwareMap.get(TouchSensor.class,"TeamBlueSwitch");
+        boolean TeamBlueSwitchRead = TeamBlueSwitch.isPressed();
+
+
         JewelWhackerServo = hardwareMap.get(Servo.class,"JewelWhackerServo");
 
-        DriveLeftRear = hardwareMap.get(DcMotor.class,"DriveLeftRear");
-        DriveRightRear = hardwareMap.get(DcMotor.class,"DriveRightRear");
         DriveLeftFront = hardwareMap.get(DcMotor.class,"DriveLeftFront");
+        DriveLeftFront.setDirection(DcMotor.Direction.REVERSE);
+        DriveLeftRear = hardwareMap.get(DcMotor.class,"DriveLeftRear");
+        DriveLeftRear.setDirection(DcMotor.Direction.REVERSE);
         DriveRightFront = hardwareMap.get(DcMotor.class,"DriveRightFront");
+        DriveRightRear = hardwareMap.get(DcMotor.class,"DriveRightRear");
 
         // Set the LED in the beginning
-        JewelWhackerColorSensor.enableLed(bLedOn);
+        JewelWhackerColorSensor.enableLed(true);
 
-        servoJewelWhackerServoPosition = 20;
+        servoJewelWhackerServoPosition = 10;
         JewelWhackerServo.setPosition(servoJewelWhackerServoPosition / 180); //This converts from degrees into 0-1 automagically.
 
 
@@ -118,123 +110,73 @@ public class AutoOp_Jewel extends LinearOpMode {
         servoJewelWhackerServoPosition = 95;
         JewelWhackerServo.setPosition(servoJewelWhackerServoPosition / 180); //This converts from degrees into 0-1 automagically.
 
-        // while the op mode is active, loop and read the RGB data.
-        // Note we use opModeIsActive() as our loop condition because it is an interruptible method.
         while (opModeIsActive()) {
 
-
-            servoGlyphLeftPosition = 70;
-            GlyphServoLeft.setPosition(servoGlyphLeftPosition / 180); //This converts from degrees into 0-1 automagically.
-
-
-            eTime2.reset();
-            while (eTime2.time() < 1) {}
-            bCurrState = true;
-
-            //servoJewelWhackerServoPosition = 40;
-            //JewelWhackerServo.setPosition(servoJewelWhackerServoPosition / 180); //This converts from degrees into 0-1 automagically.
-
-
-            servoGlyphLeftPosition = 40;
-            GlyphServoLeft.setPosition(servoGlyphLeftPosition / 180); //This converts from degrees into 0-1 automagically.
+            TeamBlueSwitchRead = TeamBlueSwitch.isPressed();
+            //If this reads true, red team.
+            //If this reads false, blue team.
 
 
             eTime2.reset();
             while (eTime2.time() < 1) {}
 
-            // sensor state transition
-            if (bCurrState && (bCurrState != bPrevState)) {
-
-                bLedOn = !bLedOn;
-                JewelWhackerColorSensor.enableLed(bLedOn);
-            }
-
-            // update previous state variable.
-            //bPrevState = bCurrState;
-
-            // convert the RGB values to HSV values.
-            Color.RGBToHSV(JewelWhackerColorSensor.red() * 8, JewelWhackerColorSensor.green() * 8, JewelWhackerColorSensor.blue() * 8, hsvValues);
+            servoJewelWhackerServoPosition = 117;
+            JewelWhackerServo.setPosition(servoJewelWhackerServoPosition / 180); //This converts from degrees into 0-1 automagically.
 
             // send the info back to driver station using telemetry function.
-            telemetry.addData("LED", bLedOn ? "On" : "Off");
             telemetry.addData("Clear", JewelWhackerColorSensor.alpha());
             telemetry.addData("Red  ", JewelWhackerColorSensor.red());
             telemetry.addData("Green", JewelWhackerColorSensor.green());
             telemetry.addData("Blue ", JewelWhackerColorSensor.blue());
-            telemetry.addData("Hue", hsvValues[0]);
+            telemetry.addData("TeamBlueSwitch", TeamBlueSwitchRead);
 
-            // change the background color to match the color detected by the RGB sensor.
-            // pass a reference to the hue, saturation, and value array as an argument
-            // to the HSVToColor method.
+            //Rotate Towards Read Jewel
+            if (((JewelWhackerColorSensor.red() >= 2) && (TeamBlueSwitchRead)) || ((JewelWhackerColorSensor.blue() >= 2) && (!TeamBlueSwitchRead))) {
 
-            relativeLayout.post(new Runnable() {
-                public void run() {
-                    relativeLayout.setBackgroundColor(Color.HSVToColor(0xff, values));
-                }
-            });
+                telemetry.addData("ConsoleOut", "Rotate Away!");
 
+                DriveLeftFront.setPower(-0.1);
+                DriveLeftRear.setPower(-0.1);
+                DriveRightFront.setPower(0.1);
+                DriveRightRear.setPower(0.1);
 
-            sleep(500);
-
-            if (JewelWhackerColorSensor.red() >= 2) {
-
-                telemetry.addData("Bleh", "Red");
-
-
-                while (eTime.time()>2) {
-                    DriveLeftFront.setPower(0.1);
-                    DriveLeftFront.setPower(0.1);
-                    DriveLeftFront.setPower(-0.1);
-                    DriveLeftFront.setPower(-0.1);
-
-                }
                 eTime.reset();
-
-                while (eTime.time()>2) {
-                    DriveLeftFront.setPower(0);
-                    DriveLeftFront.setPower(0);
-                    DriveLeftFront.setPower(0);
-                    DriveLeftFront.setPower(0);
-
+                while (eTime.time() < 1) {
                 }
-                eTime.reset();
 
-            } else if (JewelWhackerColorSensor.blue() >= 2){
-                telemetry.addData("Bleh", "blue");
+                DriveLeftFront.setPower(0);
+                DriveLeftRear.setPower(0);
+                DriveRightFront.setPower(0);
+                DriveRightRear.setPower(0);
 
-                while (eTime.time()>2) {
-                    DriveLeftFront.setPower(-0.1);
-                    DriveLeftFront.setPower(-0.1);
-                    DriveLeftFront.setPower(0.1);
-                    DriveLeftFront.setPower(0.1);
-
-                }
-                eTime.reset();
-
-                while (eTime.time()>2) {
-                    DriveLeftFront.setPower(0);
-                    DriveLeftFront.setPower(0);
-                    DriveLeftFront.setPower(0);
-                    DriveLeftFront.setPower(0);
-
-                }
-                eTime.reset();
-
-            } else {
-                telemetry.addData("Bleh", "other color");
 
             }
+            if (((JewelWhackerColorSensor.blue() >= 2) && (TeamBlueSwitchRead)) || ((JewelWhackerColorSensor.red() >= 2) && (!TeamBlueSwitchRead))) {
 
+                telemetry.addData("ConsoleOut", "Attack!!!!");
+
+                DriveLeftFront.setPower(0.1);
+                DriveLeftRear.setPower(0.1);
+                DriveRightFront.setPower(-0.1);
+                DriveRightRear.setPower(-0.1);
+
+                eTime.reset();
+                while (eTime.time() > 1) {}
+
+                DriveLeftFront.setPower(0);
+                DriveLeftRear.setPower(0);
+                DriveRightFront.setPower(0);
+                DriveRightRear.setPower(0);
+            }
+
+            TeamBlueSwitchRead = TeamBlueSwitch.isPressed();
+            telemetry.addData("ConsoleOut", "Not Read/Other Color");
             telemetry.update();
 
         }
-
-
-        // Set the panel back to the default color
-        relativeLayout.post(new Runnable() {
-            public void run() {
-                relativeLayout.setBackgroundColor(Color.WHITE);
-            }
-        });
+        JewelWhackerColorSensor.enableLed(false);
+        telemetry.addData("ConsoleOut", "Job's Done");
+        telemetry.update();
     }
+
 }
