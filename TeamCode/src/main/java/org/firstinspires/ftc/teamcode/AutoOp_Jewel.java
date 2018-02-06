@@ -78,14 +78,26 @@ public class AutoOp_Jewel extends LinearOpMode {
     GyroSensor Gyro;
 
 
+    //encoderDrive constants
+    static final double COUNTS_PER_MOTOR_REV = 28;  //was 560??
+    static final double DRIVE_GEAR_REDUCTION = 20.0;
+    static final double WHEEL_DIAMETER_INCHES = 4.0;  // For finding circumference
+    static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
+            (WHEEL_DIAMETER_INCHES * 3.1415);
+    static final double DRIVE_SPEED = 0.3;
+    static final double TURN_SPEED = 0.5;
+    private ElapsedTime runtime = new ElapsedTime(); //Elapsed Time
+    //runtime is being used in encoderDrive
+
+
     @Override
     public void runOpMode() {
 
         // hsvValues is an array that will hold the hue, saturation, and value information.
-        float hsvValues[] = {0F, 0F, 0F};
+        //float hsvValues[] = {0F, 0F, 0F};
 
         // values is a reference to the hsvValues array.
-        final float values[] = hsvValues;
+        //final float values[] = hsvValues;
 
         JewelWhackerColorSensor = hardwareMap.get(ColorSensor.class, "JewelWhackerColorSensor");
         JewelWhackerServo = hardwareMap.get(Servo.class,"JewelWhackerServo");
@@ -132,25 +144,27 @@ public class AutoOp_Jewel extends LinearOpMode {
         GlyphServoRight.setPosition(servoGlyphRightPosition / 180);
         sleep(500); //Wait for Servos
 
+        MotorGlyphGrabber.setPower(.25);
         while (MotorGlyphGrabber.getCurrentPosition() < 500){
-            MotorGlyphGrabber.setPower(.25);
             telemetry.addData("Glyph GrabberPos", MotorGlyphGrabber.getCurrentPosition());
             telemetry.update();
         }
             MotorGlyphGrabber.setPower(0);
 
-        servoJewelWhackerServoPosition = 95;
+        servoJewelWhackerServoPosition = 90;
         JewelWhackerServo.setPosition(servoJewelWhackerServoPosition / 180); //This converts from degrees into 0-1 automagically
 
         eTime2.reset();
         while (eTime2.time() < 1) {}
 
-        servoJewelWhackerServoPosition = 117;
+        servoJewelWhackerServoPosition = 117;   // CHANGE THIS BACK TO 117
         JewelWhackerServo.setPosition(servoJewelWhackerServoPosition / 180); //This converts from degrees into 0-1 automagically.
 
-        boolean GlyphNotRead = true;
+        boolean JewelNotRead = true;  // CHANGE THIS BACK TO TRUE
+
+
         while (opModeIsActive()) {
-            while (GlyphNotRead) {
+            while (JewelNotRead) {
 
                 TeamBlueSwitchRead = TeamBlueSwitch.isPressed();
 
@@ -159,7 +173,7 @@ public class AutoOp_Jewel extends LinearOpMode {
 
                     telemetry.addData("ConsoleOut", "Attack!");
 
-                    GlyphNotRead = false;
+                    JewelNotRead = false;
 
                     while (Gyro.getHeading() != 345){
                         DriveLeftFront.setPower(-0.1);
@@ -194,13 +208,13 @@ public class AutoOp_Jewel extends LinearOpMode {
 
                     telemetry.addData("ConsoleOut", "Retreat!");
 
-                    GlyphNotRead = false;
+                    JewelNotRead = false;
 
                     while (Gyro.getHeading() != 15){
-                    DriveLeftFront.setPower(0.1);
-                    DriveLeftRear.setPower(0.1);
-                    DriveRightFront.setPower(-0.1);
-                    DriveRightRear.setPower(-0.1);}
+                    DriveLeftFront.setPower(0.4);
+                    DriveLeftRear.setPower(0.4);
+                    DriveRightFront.setPower(-0.4);
+                    DriveRightRear.setPower(-0.4);}
 
                     DriveLeftFront.setPower(0);
                     DriveLeftRear.setPower(0);
@@ -214,10 +228,10 @@ public class AutoOp_Jewel extends LinearOpMode {
                     while (eTime.time() < .5) {}
 
                     while (Gyro.getHeading() != 0){
-                        DriveLeftFront.setPower(-0.1);
-                        DriveLeftRear.setPower(-0.1);
-                        DriveRightFront.setPower(0.1);
-                        DriveRightRear.setPower(0.1);}
+                        DriveLeftFront.setPower(-0.4);
+                        DriveLeftRear.setPower(-0.4);
+                        DriveRightFront.setPower(0.4);
+                        DriveRightRear.setPower(0.4);}
 
                     DriveLeftFront.setPower(0);
                     DriveLeftRear.setPower(0);
@@ -248,13 +262,19 @@ public class AutoOp_Jewel extends LinearOpMode {
             //Next Phase of Autonomous
 
 
+            encoderDrive(0.2,12.0,12.0, 10);
+            //encoderDrive(-0.2,-12.0,-12.0, 10);
 
 
 
 
 
-
-
+            MotorGlyphGrabber.setPower(-.25);
+            while (MotorGlyphGrabber.getCurrentPosition() > 0){
+                telemetry.addData("Glyph GrabberPos", MotorGlyphGrabber.getCurrentPosition());
+                telemetry.update();
+            }
+            MotorGlyphGrabber.setPower(0);
 
 
             while (totaleTime.time() < 30) {
@@ -262,5 +282,85 @@ public class AutoOp_Jewel extends LinearOpMode {
             telemetry.update();
             }
         }
+    }
+
+
+
+    public void encoderDrive(double speed,
+                             double leftInches, double rightInches,
+                             double timeoutS) {
+        int newLeftBackTarget;
+        int newRightBackTarget;
+        int newLeftFrontTarget;
+        int newRightFrontTarget;
+
+        //Ensures OpMode is running
+        if (opModeIsActive()) {
+
+            // Determine new target position, and pass to motor controller
+            newLeftBackTarget = DriveLeftRear.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
+            newRightBackTarget = DriveRightRear.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
+            newLeftFrontTarget = DriveLeftFront.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
+            newRightFrontTarget = DriveRightFront.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
+
+
+            DriveLeftRear.setTargetPosition(newLeftBackTarget);
+            DriveRightRear.setTargetPosition(newRightBackTarget);
+            DriveLeftFront.setTargetPosition(newLeftFrontTarget);
+            DriveRightFront.setTargetPosition(newRightFrontTarget);
+
+            // Turn On RUN_TO_POSITION
+            DriveLeftRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            DriveRightRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            DriveLeftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            DriveRightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            telemetry.addData("encoderDriveOut", "encoderDrive starting");
+            telemetry.update();
+
+            // reset the timeout time and start motion.
+            runtime.reset();
+//            DriveLeftRear.setPower(Math.abs(speed));   // running these as abs values won't allow reverse direction!
+//            DriveRightRear.setPower(Math.abs(speed));
+//            DriveLeftFront.setPower(Math.abs(speed));
+//            DriveRightFront.setPower(Math.abs(speed));
+            DriveLeftRear.setPower(speed+.05);
+            DriveRightRear.setPower(speed);
+            DriveLeftFront.setPower(speed+.05);
+            DriveRightFront.setPower(speed);
+
+            while (opModeIsActive() &&
+                    (runtime.seconds() < timeoutS) &&
+                    (DriveLeftRear.isBusy() || DriveRightRear.isBusy() || DriveLeftFront.isBusy() || DriveRightFront.isBusy())) {
+
+                // Display it for the driver.
+                telemetry.addData("Path1", "Running to %7d :%7d", newLeftBackTarget, newRightBackTarget, newLeftFrontTarget, newRightFrontTarget);
+                telemetry.addData("Path2", "Running at %7d :%7d",
+                        DriveLeftRear.getCurrentPosition(),
+                        DriveRightRear.getCurrentPosition(),
+                        DriveLeftFront.getCurrentPosition(),
+                        DriveRightFront.getCurrentPosition());
+                telemetry.update();
+
+            }
+
+            // Stop all motion;
+            runtime.reset();
+            DriveLeftRear.setPower(0);
+            DriveRightRear.setPower(0);
+            DriveLeftFront.setPower(0);
+            DriveRightFront.setPower(0);
+
+            // Turn off RUN_TO_POSITION
+            DriveLeftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            DriveRightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            DriveLeftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            DriveRightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+
+
+            sleep(2500);   // optional pause after each move
+
+        }
+
     }
 }
