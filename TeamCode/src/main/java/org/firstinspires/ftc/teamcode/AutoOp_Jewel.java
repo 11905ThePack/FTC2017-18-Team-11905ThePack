@@ -161,7 +161,7 @@ public class AutoOp_Jewel extends LinearOpMode {
         servoJewelWhackerServoPosition = 117;   // CHANGE THIS BACK TO 117
         JewelWhackerServo.setPosition(servoJewelWhackerServoPosition / 180); //This converts from degrees into 0-1 automagically.
 
-        boolean JewelNotRead = false;  // CHANGE THIS BACK TO TRUE
+        boolean JewelNotRead = true;  // CHANGE THIS BACK TO TRUE
 
 
         while (opModeIsActive()) {
@@ -263,7 +263,7 @@ public class AutoOp_Jewel extends LinearOpMode {
             //Next Phase of Autonomous
 
 
-            encoderDrive(0.2,44.0,44.0, 44.0,44.0,10);
+            encoderDrive(0.2,10.0,10.0, 10.0,10.0,10);
             //encoderDrive(-0.2,-12.0,-12.0, 10);
 
 
