@@ -84,8 +84,9 @@ public class AutoOp_Jewel extends LinearOpMode {
     static final double WHEEL_DIAMETER_INCHES = 4.0;  // For finding circumference
     static final double COUNTS_PER_INCH = (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
             (WHEEL_DIAMETER_INCHES * 3.1415);
-    static final double DRIVE_SPEED = 0.3;
-    static final double TURN_SPEED = 0.5;
+    //static final double DRIVE_SPEED = 0.3;
+    //static final double TURN_SPEED = 0.5;
+
     private ElapsedTime runtime = new ElapsedTime(); //Elapsed Time
     //runtime is being used in encoderDrive
 
@@ -94,10 +95,10 @@ public class AutoOp_Jewel extends LinearOpMode {
     public void runOpMode() {
 
         // hsvValues is an array that will hold the hue, saturation, and value information.
-        //float hsvValues[] = {0F, 0F, 0F};
+        float hsvValues[] = {0F, 0F, 0F};
 
         // values is a reference to the hsvValues array.
-        //final float values[] = hsvValues;
+        final float values[] = hsvValues;
 
         JewelWhackerColorSensor = hardwareMap.get(ColorSensor.class, "JewelWhackerColorSensor");
         JewelWhackerServo = hardwareMap.get(Servo.class,"JewelWhackerServo");
@@ -160,7 +161,7 @@ public class AutoOp_Jewel extends LinearOpMode {
         servoJewelWhackerServoPosition = 117;   // CHANGE THIS BACK TO 117
         JewelWhackerServo.setPosition(servoJewelWhackerServoPosition / 180); //This converts from degrees into 0-1 automagically.
 
-        boolean JewelNotRead = true;  // CHANGE THIS BACK TO TRUE
+        boolean JewelNotRead = false;  // CHANGE THIS BACK TO TRUE
 
 
         while (opModeIsActive()) {
@@ -176,10 +177,10 @@ public class AutoOp_Jewel extends LinearOpMode {
                     JewelNotRead = false;
 
                     while (Gyro.getHeading() != 345){
-                        DriveLeftFront.setPower(-0.1);
-                        DriveLeftRear.setPower(-0.1);
-                        DriveRightFront.setPower(0.1);
-                        DriveRightRear.setPower(0.1);}
+                        DriveLeftFront.setPower(-0.15);
+                        DriveLeftRear.setPower(-0.15);
+                        DriveRightFront.setPower(0.15);
+                        DriveRightRear.setPower(0.15);}
 
                     DriveLeftFront.setPower(0);
                     DriveLeftRear.setPower(0);
@@ -193,10 +194,10 @@ public class AutoOp_Jewel extends LinearOpMode {
                     while (eTime.time() < .5) {}
 
                     while (Gyro.getHeading() != 0){
-                        DriveLeftFront.setPower(0.1);
-                        DriveLeftRear.setPower(0.1);
-                        DriveRightFront.setPower(-0.1);
-                        DriveRightRear.setPower(-0.1);}
+                        DriveLeftFront.setPower(0.15);
+                        DriveLeftRear.setPower(0.15);
+                        DriveRightFront.setPower(-0.15);
+                        DriveRightRear.setPower(-0.15);}
 
                     DriveLeftFront.setPower(0);
                     DriveLeftRear.setPower(0);
@@ -211,10 +212,10 @@ public class AutoOp_Jewel extends LinearOpMode {
                     JewelNotRead = false;
 
                     while (Gyro.getHeading() != 15){
-                    DriveLeftFront.setPower(0.4);
-                    DriveLeftRear.setPower(0.4);
-                    DriveRightFront.setPower(-0.4);
-                    DriveRightRear.setPower(-0.4);}
+                    DriveLeftFront.setPower(0.15);
+                    DriveLeftRear.setPower(0.15);
+                    DriveRightFront.setPower(-0.15);
+                    DriveRightRear.setPower(-0.15);}
 
                     DriveLeftFront.setPower(0);
                     DriveLeftRear.setPower(0);
@@ -228,10 +229,10 @@ public class AutoOp_Jewel extends LinearOpMode {
                     while (eTime.time() < .5) {}
 
                     while (Gyro.getHeading() != 0){
-                        DriveLeftFront.setPower(-0.4);
-                        DriveLeftRear.setPower(-0.4);
-                        DriveRightFront.setPower(0.4);
-                        DriveRightRear.setPower(0.4);}
+                        DriveLeftFront.setPower(-0.15);
+                        DriveLeftRear.setPower(-0.15);
+                        DriveRightFront.setPower(0.15);
+                        DriveRightRear.setPower(0.15);}
 
                     DriveLeftFront.setPower(0);
                     DriveLeftRear.setPower(0);
@@ -262,7 +263,7 @@ public class AutoOp_Jewel extends LinearOpMode {
             //Next Phase of Autonomous
 
 
-            encoderDrive(0.2,12.0,12.0, 10);
+            encoderDrive(0.2,44.0,44.0, 44.0,44.0,10);
             //encoderDrive(-0.2,-12.0,-12.0, 10);
 
 
@@ -287,7 +288,7 @@ public class AutoOp_Jewel extends LinearOpMode {
 
 
     public void encoderDrive(double speed,
-                             double leftInches, double rightInches,
+                             double leftBackInches, double rightBackInches,double leftFrontInches, double rightFrontInches,
                              double timeoutS) {
         int newLeftBackTarget;
         int newRightBackTarget;
@@ -298,10 +299,10 @@ public class AutoOp_Jewel extends LinearOpMode {
         if (opModeIsActive()) {
 
             // Determine new target position, and pass to motor controller
-            newLeftBackTarget = DriveLeftRear.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
-            newRightBackTarget = DriveRightRear.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
-            newLeftFrontTarget = DriveLeftFront.getCurrentPosition() + (int) (leftInches * COUNTS_PER_INCH);
-            newRightFrontTarget = DriveRightFront.getCurrentPosition() + (int) (rightInches * COUNTS_PER_INCH);
+            newLeftBackTarget = DriveLeftRear.getCurrentPosition() + (int) (leftBackInches * COUNTS_PER_INCH);
+            newRightBackTarget = DriveRightRear.getCurrentPosition() + (int) (rightBackInches * COUNTS_PER_INCH);
+            newLeftFrontTarget = DriveLeftFront.getCurrentPosition() + (int) (leftFrontInches * COUNTS_PER_INCH);
+            newRightFrontTarget = DriveRightFront.getCurrentPosition() + (int) (rightFrontInches * COUNTS_PER_INCH);
 
 
             DriveLeftRear.setTargetPosition(newLeftBackTarget);
