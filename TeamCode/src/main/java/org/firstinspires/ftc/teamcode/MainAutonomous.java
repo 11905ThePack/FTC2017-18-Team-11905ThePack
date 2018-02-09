@@ -315,7 +315,7 @@ public class MainAutonomous extends LinearOpMode {
                     encoderDriveRotate(.15,80,5);
                     encoderDriveStraight(.20, 18 , 5);
                     encoderDriveRotate(.15,80,5);
-                    encoderDriveStraight(.20, 8, 5);
+                    encoderDriveStraight(.20, 6, 5);
                     encoderDriveStraight(-.20, -2, 2);
                     encoderDriveStraight(.20, 2, 2);
 
