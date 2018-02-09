@@ -109,7 +109,8 @@ public class MainAutonomous extends LinearOpMode {
         boolean Position1SwitchRead = Position1Switch.isPressed();
 
         Gyro = hardwareMap.get(GyroSensor.class, "Gyro");
-
+        int gyroValue = 0;   // used for temp stoarge of most recently read gyro value
+        int jewelNudge = 0;  // used to count nudges forward if jewel cannot be read
         DriveLeftFront = hardwareMap.get(DcMotor.class, "DriveLeftFront");
         DriveLeftFront.setDirection(DcMotor.Direction.REVERSE);
         DriveLeftRear = hardwareMap.get(DcMotor.class, "DriveLeftRear");
@@ -127,6 +128,7 @@ public class MainAutonomous extends LinearOpMode {
         GlyphServoRight.setPosition(servoGlyphRightPosition / 180);
 
         Gyro.calibrate();
+
         telemetry.addData("Glyph GrabberPos", MotorGlyphGrabber.getCurrentPosition());
         telemetry.update();
 
@@ -148,8 +150,8 @@ public class MainAutonomous extends LinearOpMode {
         JewelWhackerServo.setPosition(servoJewelWhackerServoPosition / 180); //This converts from degrees into 0-1 automagically.
 
 
-        boolean SkipJewel = true; //Skips the Process of knocking off the Jewel
-        boolean JewelNotRead = true;  // CHANGE THIS BACK TO TRUE
+        boolean SkipJewel = false; // if true, this Skips the Process of knocking off the Jewel
+        boolean JewelNotRead = true;
 
         if (SkipJewel){
             JewelNotRead = false;
@@ -163,30 +165,36 @@ public class MainAutonomous extends LinearOpMode {
             sleep(500); //Wait for Servos
 
             MotorGlyphGrabber.setPower(.25);
-            while (MotorGlyphGrabber.getCurrentPosition() < 500) {
+            while (MotorGlyphGrabber.getCurrentPosition() < 700) {
                 telemetry.addData("Glyph GrabberPos", MotorGlyphGrabber.getCurrentPosition());
                 telemetry.update();
             }
             MotorGlyphGrabber.setPower(0);
 
         }
-
         while (opModeIsActive()) {
 
             while (JewelNotRead) {
 
                 //Rotate Towards Read Jewel
-                if (((JewelWhackerColorSensor.red() >= 2) && (!TeamBlueSwitchRead)) || ((JewelWhackerColorSensor.blue() >= 2) && (TeamBlueSwitchRead))) {
+                if (((JewelWhackerColorSensor.red() >= 2) && (!TeamBlueSwitchRead))
+                        || ((JewelWhackerColorSensor.blue() >= 2) && (TeamBlueSwitchRead))) {
 
                     telemetry.addData("ConsoleOut", "Attack!");
 
                     JewelNotRead = false;
 
-                    while (Gyro.getHeading() != 345) {
-                        DriveLeftFront.setPower(-0.15);
-                        DriveLeftRear.setPower(-0.15);
-                        DriveRightFront.setPower(0.15);
-                        DriveRightRear.setPower(0.15);
+                    while (jewelNudge>0) {
+                        encoderDriveStraight(.20, .5, 1);
+                        jewelNudge--;
+                    }
+                    DriveLeftFront.setPower(-0.10);
+                    DriveLeftRear.setPower(-0.10);
+                    DriveRightFront.setPower(0.10);
+                    DriveRightRear.setPower(0.10);
+                    gyroValue = Gyro.getHeading();
+                    while ((gyroValue > 348) || (gyroValue==0)) {
+                        gyroValue = Gyro.getHeading();
                     }
 
                     DriveLeftFront.setPower(0);
@@ -196,16 +204,15 @@ public class MainAutonomous extends LinearOpMode {
 
                     servoJewelWhackerServoPosition = 10;
                     JewelWhackerServo.setPosition(servoJewelWhackerServoPosition / 180);
+                    sleep(100);
 
-                    eTime.reset();
-                    while (eTime.time() < .5) {
-                    }
-
-                    while (Gyro.getHeading() != 0) {
-                        DriveLeftFront.setPower(0.15);
-                        DriveLeftRear.setPower(0.15);
-                        DriveRightFront.setPower(-0.15);
-                        DriveRightRear.setPower(-0.15);
+                    DriveLeftFront.setPower(0.10);
+                    DriveLeftRear.setPower(0.10);
+                    DriveRightFront.setPower(-0.10);
+                    DriveRightRear.setPower(-0.10);
+                    gyroValue = Gyro.getHeading();
+                    while (gyroValue > 10) {   //this should trip as soon as the gyro goes past 359
+                        gyroValue = Gyro.getHeading();
                     }
 
                     DriveLeftFront.setPower(0);
@@ -214,19 +221,24 @@ public class MainAutonomous extends LinearOpMode {
                     DriveRightRear.setPower(0);
 
 
-                } else if (((JewelWhackerColorSensor.blue() >= 2) && (!TeamBlueSwitchRead)) || ((JewelWhackerColorSensor.red() >= 2) && (TeamBlueSwitchRead))) {
+                } else if (((JewelWhackerColorSensor.blue() >= 2) && (!TeamBlueSwitchRead))
+                        || ((JewelWhackerColorSensor.red() >= 2) && (TeamBlueSwitchRead))) {
 
                     telemetry.addData("ConsoleOut", "Retreat!");
 
                     JewelNotRead = false;
 
-                    gyroRotate(270,10 );
-
-                    while (Gyro.getHeading() != 15) {
-                        DriveLeftFront.setPower(0.15);
-                        DriveLeftRear.setPower(0.15);
-                        DriveRightFront.setPower(-0.15);
-                        DriveRightRear.setPower(-0.15);
+                    while (jewelNudge>0) {
+                        encoderDriveStraight(.20, .5, 1);
+                        jewelNudge--;
+                    }
+                    DriveLeftFront.setPower(0.10);
+                    DriveLeftRear.setPower(0.10);
+                    DriveRightFront.setPower(-0.10);
+                    DriveRightRear.setPower(-0.10);
+                    gyroValue = Gyro.getHeading();
+                    while (gyroValue < 12) {
+                        gyroValue = Gyro.getHeading();
                     }
 
                     DriveLeftFront.setPower(0);
@@ -236,36 +248,51 @@ public class MainAutonomous extends LinearOpMode {
 
                     servoJewelWhackerServoPosition = 10;
                     JewelWhackerServo.setPosition(servoJewelWhackerServoPosition / 180);
+                    sleep(100);
 
-                    eTime.reset();
-                    while (eTime.time() < .5) {
-                    }
-
-                    while (Gyro.getHeading() != 0) {
-                        DriveLeftFront.setPower(-0.15);
-                        DriveLeftRear.setPower(-0.15);
-                        DriveRightFront.setPower(0.15);
-                        DriveRightRear.setPower(0.15);
+                    DriveLeftFront.setPower(-0.10);
+                    DriveLeftRear.setPower(-0.10);
+                    DriveRightFront.setPower(0.10);
+                    DriveRightRear.setPower(0.10);
+                    gyroValue = Gyro.getHeading();
+                    while ((gyroValue > 0) && (gyroValue <300)) {  // trips when gyroValue hits 0 or goes past to 359
+                        gyroValue = Gyro.getHeading();
                     }
 
                     DriveLeftFront.setPower(0);
                     DriveLeftRear.setPower(0);
                     DriveRightFront.setPower(0);
                     DriveRightRear.setPower(0);
+                } else {  //jewel is not being read
+                    if (JewelNotRead) {
+
+                        if (jewelNudge < 2) {
+                            jewelNudge++;
+                            encoderDriveStraight(-.20, -.5, 1);
+                            telemetry.addData("ConsoleOut", "jewelNudge");
+                        } else {   //give up
+
+                            servoJewelWhackerServoPosition = 10;
+                            JewelWhackerServo.setPosition(servoJewelWhackerServoPosition / 180);
+                            sleep(100);
+                            while (jewelNudge > 0) {
+                                encoderDriveStraight(.20, .5, 1);
+                                jewelNudge--;
+                            }
+                            telemetry.addData("ConsoleOut", "give up on Jewel");
+                            JewelNotRead = false;  //give up!
+                        }
+                    } else {
+                        telemetry.addData("ConsoleOut", "jewel whacked?");
+                    }
                 }
 
                 // send the info back to driver station using telemetry function.
-                telemetry.addData("Clear", JewelWhackerColorSensor.alpha());
+//                telemetry.addData("Clear", JewelWhackerColorSensor.alpha());
                 telemetry.addData("Red", JewelWhackerColorSensor.red());
                 telemetry.addData("Green", JewelWhackerColorSensor.green());
-                telemetry.addData("Blue", JewelWhackerColorSensor.blue());
+//                telemetry.addData("Blue", JewelWhackerColorSensor.blue());
                 telemetry.addData("GyroPos", Gyro.getHeading());
-
-                if (TeamBlueSwitchRead) {
-                    telemetry.addData("TeamBlueSwitch", "Switch ON");
-                } else {
-                    telemetry.addData("TeamBlueSwitch", "Switch OFF");
-                }
 
                 telemetry.update();
 
@@ -282,46 +309,66 @@ public class MainAutonomous extends LinearOpMode {
 //            gyroRotate(-90,10);
 //            sleep(1000);
             if (TeamBlueSwitchRead)  {   //blue team
+
                if (Position1SwitchRead)  {  //blue team, in position 1
                     telemetry.addData("ConsoleOut", "blue team in position 1");
                     telemetry.update();
-                    sleep(2000);
+
+                    encoderDriveStraight(.20, 26, 6);
+                    encoderDriveRotate(-.20, -75, 5);
+                   encoderDriveStraight(.20, 8, 3);
+
                } else  {   //blue team, in position 2
                     telemetry.addData("ConsoleOut", "blue team in position 2");
                     telemetry.update();
-                    sleep(2000);
 
-                   encoderDriveStraight(.20, 24, 5);
+                   encoderDriveStraight(.20, 34, 5);
                    encoderDriveRotate(.15,80,5);
-                   encoderDriveStraight(.20, 18, 5);
+                   encoderDriveStraight(.20, 14.5, 5);
                    encoderDriveRotate(-.15,-75,5);
-                   encoderDriveStraight(.20, 10, 3);
-                   encoderDriveStraight(-.20, -2, 2);
-                   encoderDriveStraight(.20, 2, 2);
+                   encoderDriveStraight(.20, 2, 3);
 
                }
             }  else  {  //red team
+
                 if (Position1SwitchRead)  {  //red team, in position 1
                     telemetry.addData("ConsoleOut", "red team in position 1");
                     telemetry.update();
-                    sleep(2000);
+
+                    encoderDriveStraight(-.20, -27, 6);
+                    encoderDriveRotate(-.20, -75,5);
+                    encoderDriveStraight(.20, 8, 3);
 
                 } else  {   //red team, in position 2
                     telemetry.addData("ConsoleOut", "red team in position 2");
                     telemetry.update();
-                    sleep(2000);
 
                     encoderDriveStraight(-.20, -24, 5);
                     encoderDriveRotate(.15,80,5);
                     encoderDriveStraight(.20, 18 , 5);
                     encoderDriveRotate(.15,80,5);
-                    encoderDriveStraight(.20, 6, 5);
-                    encoderDriveStraight(-.20, -2, 2);
-                    encoderDriveStraight(.20, 2, 2);
-
+                    encoderDriveStraight(.20, 0.5 , 5);
 
                 }
             }
+            //Insert servos letting go of glyph HERE
+            MotorGlyphGrabber.setPower(-.20);
+            while (MotorGlyphGrabber.getCurrentPosition() > 0) {
+                telemetry.addData("Glyph GrabberPos", MotorGlyphGrabber.getCurrentPosition());
+                telemetry.update();
+            }
+            MotorGlyphGrabber.setPower(0);
+            servoGlyphLeftPosition = 180;
+            servoGlyphRightPosition = 0;
+            GlyphServoLeft.setPosition(servoGlyphLeftPosition / 180);
+            GlyphServoRight.setPosition(servoGlyphRightPosition / 180);
+//            sleep(500);
+
+            encoderDriveStraight(.20, 2, 3);
+            encoderDriveRotate(.15,15,5);
+
+            encoderDriveStraight(-.20, -1, 2);
+            encoderDriveStraight(.20, 1.5, 2);
 
 
             //gyroRotate(-10,10);
@@ -343,12 +390,6 @@ public class MainAutonomous extends LinearOpMode {
 //            encoderDriveStraight(.20, 12, 10);
 
             /*
-            MotorGlyphGrabber.setPower(-.20);
-            while (MotorGlyphGrabber.getCurrentPosition() > 0) {
-                telemetry.addData("Glyph GrabberPos", MotorGlyphGrabber.getCurrentPosition());
-//                telemetry.update();
-            }
-            MotorGlyphGrabber.setPower(0);
             */
 
 
