@@ -37,9 +37,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name = "Jewlely Thing", group = "Sensor")
+@Autonomous(name = "MainAutonomous", group = "First")
 
-public class AutoOp_Jewel extends LinearOpMode {
+public class MainAutonomous extends LinearOpMode {
 
     ColorSensor JewelWhackerColorSensor;
 
@@ -291,6 +291,12 @@ public class AutoOp_Jewel extends LinearOpMode {
                     telemetry.update();
                     sleep(2000);
 
+                   encoderDriveStraight(.20, 24, 5);
+                   encoderDriveRotate(.15,80,5);
+                   encoderDriveStraight(.20, 19, 5);
+                   encoderDriveRotate(-.15,-75,5);
+                   encoderDriveStraight(.20, 14, 3);
+
                }
             }  else  {  //red team
                 if (Position1SwitchRead)  {  //red team, in position 1
@@ -304,10 +310,10 @@ public class AutoOp_Jewel extends LinearOpMode {
                     sleep(2000);
 
                     encoderDriveStraight(-.20, -24, 5);
-                    encoderDriveRotate(.15,90,5);
-                    encoderDriveStraight(.20, 30, 5);
-                    encoderDriveRotate(.15,90,5);
-                    encoderDriveStraight(.20, 4, 5);
+                    encoderDriveRotate(.15,80,5);
+                    encoderDriveStraight(.20, 19, 5);
+                    encoderDriveRotate(.15,80,5);
+                    encoderDriveStraight(.20, 14, 5);
 
                 }
             }
