@@ -293,9 +293,11 @@ public class MainAutonomous extends LinearOpMode {
 
                    encoderDriveStraight(.20, 24, 5);
                    encoderDriveRotate(.15,80,5);
-                   encoderDriveStraight(.20, 19, 5);
+                   encoderDriveStraight(.20, 18, 5);
                    encoderDriveRotate(-.15,-75,5);
-                   encoderDriveStraight(.20, 14, 3);
+                   encoderDriveStraight(.20, 10, 3);
+                   encoderDriveStraight(-.20, -2, 2);
+                   encoderDriveStraight(.20, 2, 2);
 
                }
             }  else  {  //red team
@@ -311,9 +313,12 @@ public class MainAutonomous extends LinearOpMode {
 
                     encoderDriveStraight(-.20, -24, 5);
                     encoderDriveRotate(.15,80,5);
-                    encoderDriveStraight(.20, 17, 5);
+                    encoderDriveStraight(.20, 18 , 5);
                     encoderDriveRotate(.15,80,5);
-                    encoderDriveStraight(.20, 12, 5);
+                    encoderDriveStraight(.20, 8, 5);
+                    encoderDriveStraight(-.20, -2, 2);
+                    encoderDriveStraight(.20, 2, 2);
+
 
                 }
             }
