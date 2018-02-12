@@ -793,7 +793,6 @@ public class MainAutonomous extends LinearOpMode {
             DriveRightFront.setPower(0);
             DriveRightRear.setPower(0);
 
-
         }
 
     }
