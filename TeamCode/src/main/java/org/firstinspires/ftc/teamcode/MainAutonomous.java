@@ -139,14 +139,14 @@ public class MainAutonomous extends LinearOpMode {
         TeamBlueSwitchRead = TeamBlueSwitch.isPressed();
         Position1SwitchRead = Position1Switch.isPressed();
 
-        servoJewelWhackerServoPosition = 90;
+        servoJewelWhackerServoPosition = 100;
         JewelWhackerServo.setPosition(servoJewelWhackerServoPosition / 180); //This converts from degrees into 0-1 automagically
 
         eTime2.reset();
         while (eTime2.time() < 1) {
         }
 
-        servoJewelWhackerServoPosition = 117;   // CHANGE THIS BACK TO 117  (or 30 works ok to disable it)
+        servoJewelWhackerServoPosition = 120;   // CHANGE THIS BACK TO 117  (or 30 works ok to disable it)
         JewelWhackerServo.setPosition(servoJewelWhackerServoPosition / 180); //This converts from degrees into 0-1 automagically.
 
 
@@ -266,7 +266,7 @@ public class MainAutonomous extends LinearOpMode {
                 } else {  //jewel is not being read
                     if (JewelNotRead) {
 
-                        if (jewelNudge < 2) {
+                        if (jewelNudge < 3) {
                             jewelNudge++;
                             encoderDriveStraight(-.20, -.5, 1);
                             telemetry.addData("ConsoleOut", "jewelNudge");
@@ -343,11 +343,12 @@ public class MainAutonomous extends LinearOpMode {
                     telemetry.addData("ConsoleOut", "red team in position 2");
                     telemetry.update();
 
-                    encoderDriveStraight(-.20, -24, 5);
+                    encoderDriveStraight(-.20, -22, 5);
                     encoderDriveRotate(.15,80,5);
                     encoderDriveStraight(.20, 18 , 5);
                     encoderDriveRotate(.15,80,5);
                     encoderDriveStraight(.20, 0.5 , 5);
+
 
                 }
             }
@@ -369,6 +370,7 @@ public class MainAutonomous extends LinearOpMode {
 
             encoderDriveStraight(-.20, -1, 2);
             encoderDriveStraight(.20, 1.5, 2);
+            encoderDriveStraight(-.20, -4, 2);
 
 
             //gyroRotate(-10,10);
