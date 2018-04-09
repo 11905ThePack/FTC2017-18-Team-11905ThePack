@@ -10,9 +10,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="MainTeleOp", group="Drive-Type OpModes")
+@TeleOp(name="FullTeleOp", group="Drive-Type OpModes")
 
-public class MainTeleOp extends OpMode
+public class FullTeleOp extends OpMode
 {
     // Declare OpMode variables for use.
     //All servo variables are in DEGREES.
