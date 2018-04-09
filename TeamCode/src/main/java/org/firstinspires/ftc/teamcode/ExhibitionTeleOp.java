@@ -117,7 +117,7 @@ public class ExhibitionTeleOp extends OpMode
     //private boolean Extending = false;
     //private boolean Retracting = false;
     private boolean UseServoStick = true;
-    private boolean DriveMode = false; //False is for Glyphs, True is for Relic
+    //private boolean DriveMode = false; //False is for Glyphs, True is for Relic
     @Override
     public void loop() {
         //Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
