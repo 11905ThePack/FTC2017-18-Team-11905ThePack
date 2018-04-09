@@ -10,9 +10,9 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
-@TeleOp(name="MainTeleOp", group="Drive-Type OpModes")
+@TeleOp(name="ExhibitionTeleOp", group="Drive-Type OpModes")
 
-public class MainTeleOp extends OpMode
+public class ExhibitionTeleOp extends OpMode
 {
     // Declare OpMode variables for use.
     //All servo variables are in DEGREES.
@@ -114,8 +114,8 @@ public class MainTeleOp extends OpMode
         Gyro.calibrate();
     }
 
-    private boolean Extending = false;
-    private boolean Retracting = false;
+    //private boolean Extending = false;
+    //private boolean Retracting = false;
     private boolean UseServoStick = true;
     private boolean DriveMode = false; //False is for Glyphs, True is for Relic
     @Override
@@ -161,26 +161,26 @@ public class MainTeleOp extends OpMode
 
         double v5 = -gamepad2.left_stick_y * 0.6;
 
-        if (gamepad2.dpad_up) {
+        /*if (gamepad2.dpad_up) {
             consoleOut = "Extending Relic Grabber To Maximum Length";
             servoRelicServoPitchPosition = 150;
             Extending = true;
             Retracting = false;
-        }
+       }*/
 
-        if (gamepad2.dpad_down) {
+        /*if (gamepad2.dpad_down) {
             consoleOut = "Stopped Relic Grabber Extension/Retraction";
             Extending = false;
             Retracting = false;
-        }
+        }*/
 
-        if (gamepad2.dpad_left) {
+        /*if (gamepad2.dpad_left) {
             consoleOut = "Returning Relic Extension";
             Extending = false;
             Retracting = true;
-        }
+        }*/
 
-        if (gamepad2.dpad_right) {
+        /*if (gamepad2.dpad_right) {
             if (DriveMode){
                 DriveMode = true;
                 consoleOut = "Set Drive Mode to Relic Mode";
@@ -188,7 +188,7 @@ public class MainTeleOp extends OpMode
                 DriveMode = false;
                 consoleOut = "Set Drive Mode to Glyph Mode";
             }
-        }
+        }*/
 
         //Toggle the Right Stick controlling the glyph grabber servos.
         if (gamepad2.right_stick_button) {
@@ -198,8 +198,8 @@ public class MainTeleOp extends OpMode
         }
 
         if (gamepad2.left_bumper) {
-            servoGlyphLeftPosition = 90;
-            servoGlyphRightPosition = 90;
+            servoGlyphLeftPosition = 110;
+            servoGlyphRightPosition = 70;
         }
 
         if (gamepad2.right_bumper) {
@@ -207,7 +207,7 @@ public class MainTeleOp extends OpMode
             servoGlyphRightPosition = 110;
         }
 
-        if (gamepad2.a) {
+        /*if (gamepad2.a) {
             servoRelicServoPitchPosition = 0;
         }
 
@@ -223,7 +223,7 @@ public class MainTeleOp extends OpMode
         if (gamepad2.y) {
             servoRelicServoFrontPosition = 35;
             servoRelicServoBackPosition = 90;
-        }
+        }*/
 
         // Set Servo positions to variable "servoPosition"(s)
         servoGlyphLeftPosition = Range.clip(servoGlyphLeftPosition, 0, 180); //Clips servo range into usable area. Protects from over extension.
@@ -259,21 +259,21 @@ public class MainTeleOp extends OpMode
         int GyroPos = Gyro.getHeading();
 
         //Automated Relic Extension/Retraction
-        if (Extending) {
+        /*if (Extending) {
             if (MotorRelicExtension.getCurrentPosition() > 7600) {
                 MotorRelicExtension.setPower(0);
             } else {
                 MotorRelicExtension.setPower(.25);
             }
-        }
+        }*/
 
-        if (Retracting) {
+        /*if (Retracting) {
             if (MotorRelicExtension.getCurrentPosition() > 0) {
                 MotorRelicExtension.setPower(-.15);
             } else {
                 MotorRelicExtension.setPower(0);
             }
-        }
+        }*/
 
 
 
@@ -282,11 +282,11 @@ public class MainTeleOp extends OpMode
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Running, Run Time: " + runtime.toString());
 
-        telemetry.addData("FrontMotors", "Left: " + DriveLeftFrontPos);
+        /*telemetry.addData("FrontMotors", "Left: " + DriveLeftFrontPos);
         telemetry.addData("FrontMotors", "Right: " + DriveRightFrontPos);
         telemetry.addData("RearMotors", "Left: "+ DriveLeftRearPos);
         telemetry.addData("RearMotors", "Right: " + DriveRightRearPos);
-
+*/
         telemetry.addData("RelicGrabberExtensionPos", RelicGrabberExtensionPos);
         telemetry.addData("MotorGlyphGrabberPos", MotorGlyphGrabberPos);
         telemetry.addData("GyroPos:", GyroPos);
