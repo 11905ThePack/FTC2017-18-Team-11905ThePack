@@ -109,7 +109,7 @@ public class ExhibitionAutonomous extends LinearOpMode {
         boolean Position1SwitchRead = Position1Switch.isPressed();
 
         Gyro = hardwareMap.get(GyroSensor.class, "Gyro");
-        int gyroValue = 0;   // used for temp stoarge of most recently read gyro value
+        int gyroValue = 0;   // used for temp storage of most recently read gyro value
         int jewelNudge = 0;  // used to count nudges forward if jewel cannot be read
         DriveLeftFront = hardwareMap.get(DcMotor.class, "DriveLeftFront");
         DriveLeftFront.setDirection(DcMotor.Direction.REVERSE);
@@ -145,7 +145,7 @@ public class ExhibitionAutonomous extends LinearOpMode {
 
         servoJewelWhackerServoPosition = 30;
         JewelWhackerServo.setPosition(servoJewelWhackerServoPosition / 180); //This converts from degrees into 0-1 automagically.
-
+        double Claps = 0;
         while (opModeIsActive()) {
 
             //First Phase of Autonomous
@@ -154,7 +154,28 @@ public class ExhibitionAutonomous extends LinearOpMode {
             sleep(2000);
 
            gyroRotate(-90,10);
-            sleep(1000);
+            sleep(2000);
+
+            //"Clap" Twice.
+            Claps = 0;
+            while (Claps != 2){
+                servoGlyphLeftPosition = 70;
+                servoGlyphRightPosition = 110;
+                GlyphServoLeft.setPosition(servoGlyphLeftPosition / 180);
+                GlyphServoRight.setPosition(servoGlyphRightPosition / 180);
+
+                servoGlyphLeftPosition = 110;
+                servoGlyphRightPosition = 70;
+                GlyphServoLeft.setPosition(servoGlyphLeftPosition / 180);
+                GlyphServoRight.setPosition(servoGlyphRightPosition / 180);
+                Claps++;
+            }
+
+            encoderDriveStraight(.4, 6, 3);
+            sleep(4);
+            encoderDriveStraight(-.4, -6, 3);
+            sleep(4);
+
 
         }
     }
