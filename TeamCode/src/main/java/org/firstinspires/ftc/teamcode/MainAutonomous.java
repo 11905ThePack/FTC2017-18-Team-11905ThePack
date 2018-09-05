@@ -150,7 +150,7 @@ public class MainAutonomous extends LinearOpMode {
         JewelWhackerServo.setPosition(servoJewelWhackerServoPosition / 180); //This converts from degrees into 0-1 automagically.
 
 
-        boolean SkipJewel = false; // if true, this Skips the Process of knocking off the Jewel
+        boolean SkipJewel = true; // if true, this Skips the Process of knocking off the Jewel
         boolean JewelNotRead = true;
 
         if (SkipJewel){
@@ -303,11 +303,14 @@ public class MainAutonomous extends LinearOpMode {
 
             //Next Phase of Autonomous
 
+            encoderDriveStraight(.20,72, 10);
+
 //            gyroRotate(90,10);
 //            sleep(2000);
 
 //            gyroRotate(-90,10);
 //            sleep(1000);
+           /*
             if (TeamBlueSwitchRead)  {   //blue team
 
                if (Position1SwitchRead)  {  //blue team, in position 1
@@ -391,7 +394,6 @@ public class MainAutonomous extends LinearOpMode {
 //            encoderDriveStraight(-.20, -12, 10);
 //            encoderDriveStraight(.20, 12, 10);
 
-            /*
             */
 
 
@@ -442,9 +444,9 @@ public class MainAutonomous extends LinearOpMode {
 //            DriveRightRear.setPower(Math.abs(speed));
 //            DriveLeftFront.setPower(Math.abs(speed));
 //            DriveRightFront.setPower(Math.abs(speed));
-            DriveLeftRear.setPower(speed + .05);
+            DriveLeftRear.setPower(speed * 1.05);
             DriveRightRear.setPower(speed);
-            DriveLeftFront.setPower(speed + .05);
+            DriveLeftFront.setPower(speed * 1.05);
             DriveRightFront.setPower(speed);
 
             while (opModeIsActive() &&
