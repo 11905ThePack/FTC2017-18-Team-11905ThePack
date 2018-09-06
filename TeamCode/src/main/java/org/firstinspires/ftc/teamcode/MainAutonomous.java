@@ -304,6 +304,9 @@ public class MainAutonomous extends LinearOpMode {
             //Next Phase of Autonomous
 
             encoderDriveStraight(.20,72, 10);
+            encoderDriveRotate( .20,180, 5);
+            encoderDriveStraight(.20,72, 10);
+
 
 //            gyroRotate(90,10);
 //            sleep(2000);
@@ -536,9 +539,9 @@ public class MainAutonomous extends LinearOpMode {
 
             // reset the timeout time and start motion.
             runtime.reset();
-            DriveLeftRear.setPower(speed);
+            DriveLeftRear.setPower(speed * 1.583); //This is with calibration added.
             DriveRightRear.setPower(speed);
-            DriveLeftFront.setPower(speed);
+            DriveLeftFront.setPower(speed * 1.583); //This is with calibration added.
             DriveRightFront.setPower(speed);
 
 
@@ -546,7 +549,7 @@ public class MainAutonomous extends LinearOpMode {
                     (runtime.seconds() < timeoutS) &&
                     (DriveLeftRear.isBusy() || DriveRightRear.isBusy())  //  || DriveLeftFront.isBusy() || DriveRightFront.isBusy())
                     && (totaleTime.time() < 29)) {
-
+/*
               //attempts to correct drive speed by allowing the side that is "behind" to catch up
                 if (speed > 0) {
                     if ((DriveLeftRear.getCurrentPosition() > (DriveRightRear.getCurrentPosition() + 10)) && !leftAhead) {  //left is ahead
@@ -586,7 +589,7 @@ public class MainAutonomous extends LinearOpMode {
                     }
                 }
 
-
+*/
                 // Display it for the driver.
                 telemetry.addData("Path1", "Running to %7d :%7d :%7d :%7d", newLeftBackTarget, newRightBackTarget, newLeftFrontTarget, newRightFrontTarget);
                 telemetry.addData("Path2", "Running at %7d :%7d :%7d :%7d",
@@ -669,9 +672,9 @@ public class MainAutonomous extends LinearOpMode {
             runtime.reset();
             if (speed > 0.0) {
                 DriveLeftRear.setPower(-(speed * 1.00));
-                DriveRightRear.setPower(speed);
+                DriveRightRear.setPower(speed * 1.583);
                 DriveLeftFront.setPower(-(speed * 1.00));
-                DriveRightFront.setPower(speed);
+                DriveRightFront.setPower(speed * 1.583);
             } else {   //run in reverse
                 DriveLeftRear.setPower(speed);
                 DriveRightRear.setPower(-(speed * 1.00));
