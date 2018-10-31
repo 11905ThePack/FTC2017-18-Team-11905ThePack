@@ -37,51 +37,35 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-@Autonomous(name = "MainAutonomous", group = "First")
+@Autonomous(name = "TestAutoOp", group = "First")
 
-public class MainAutonomous extends LinearOpMode {
-
-    //ColorSensor JewelWhackerColorSensor;
+public class TestAutoOp extends LinearOpMode {
 
     ElapsedTime eTime = new ElapsedTime();
     ElapsedTime eTime2 = new ElapsedTime();
-    ElapsedTime totaleTime = new ElapsedTime();
+    ElapsedTime total_eTime = new ElapsedTime();
 
     DcMotor DriveLeftFront;
     DcMotor DriveLeftRear;
     DcMotor DriveRightFront;
     DcMotor DriveRightRear;
 
-    //DcMotor MotorGlyphGrabber;
-
-    private Servo JewelWhackerServo; //Jewel Whacker Servo
-    private double servoJewelWhackerServoPosition = 0;
-
-    private Servo GlyphServoLeft; //Left half of glyph grabber
-    private double servoGlyphLeftPosition = 180;
-    private Servo GlyphServoRight; //Right half of glyph grabber
-    private double servoGlyphRightPosition = 0;
+    GyroSensor Gyro;
 
     TouchSensor TeamBlueSwitch;
     TouchSensor Position1Switch;
-    GyroSensor Gyro;
 
-
-    //encoderDrive constants
+    //Encoder Function Constants
     static final double COUNTS_PER_MOTOR_REV = 28;
     static final double DRIVE_GEAR_REDUCTION = 20.0;
-    static final double WHEEL_DIAMETER_INCHES = 4.0;  // For finding circumference
+    static final double WHEEL_DIAMETER_INCHES = 4.0;
     static final double COUNTS_PER_INCH =
             (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) /
                     (WHEEL_DIAMETER_INCHES * 3.1415);
     static final double COUNTS_PER_DEGREE =
-            (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) * (1.8/90) * .82; //this value is a guess
-    //static final double DRIVE_SPEED = 0.3;
-    //static final double TURN_SPEED = 0.5;
+            (COUNTS_PER_MOTOR_REV * DRIVE_GEAR_REDUCTION) * 1.8/90; //this value is a guess
 
     private ElapsedTime runtime = new ElapsedTime(); //Elapsed Time
-    //runtime is being used in encoderDrive
-
 
     @Override
     public void runOpMode() {
@@ -92,16 +76,6 @@ public class MainAutonomous extends LinearOpMode {
         // values is a reference to the hsvValues array.
         final float values[] = hsvValues;
 
-        //JewelWhackerColorSensor = hardwareMap.get(ColorSensor.class, "JewelWhackerColorSensor");
-        //JewelWhackerServo = hardwareMap.get(Servo.class, "JewelWhackerServo");
-
-        //MotorGlyphGrabber = hardwareMap.get(DcMotor.class, "MotorGlyphGrabber");
-        //MotorGlyphGrabber.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        //MotorGlyphGrabber.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        //GlyphServoLeft = hardwareMap.get(Servo.class, "GlyphServoLeft");
-        //GlyphServoRight = hardwareMap.get(Servo.class, "GlyphServoRight");
-
-
         TeamBlueSwitch = hardwareMap.get(TouchSensor.class, "TeamBlueSwitch");
         boolean TeamBlueSwitchRead = TeamBlueSwitch.isPressed();
 
@@ -109,7 +83,8 @@ public class MainAutonomous extends LinearOpMode {
         boolean Position1SwitchRead = Position1Switch.isPressed();
 
         Gyro = hardwareMap.get(GyroSensor.class, "Gyro");
-        int gyroValue = 0;   // used for temp stoarge of most recently read gyro value
+        int gyroValue = 0;   // Most Recent Gyro Value
+
         DriveLeftFront = hardwareMap.get(DcMotor.class, "DriveLeftFront");
         DriveLeftFront.setDirection(DcMotor.Direction.REVERSE);
         DriveLeftRear = hardwareMap.get(DcMotor.class, "DriveLeftRear");
@@ -119,9 +94,11 @@ public class MainAutonomous extends LinearOpMode {
 
         Gyro.calibrate();
 
-        // wait for the start button to be pressed.
+        telemetry.update();
+
+        //Wait For Start
         waitForStart();
-        totaleTime.reset();
+        total_eTime.reset();
 
         TeamBlueSwitchRead = TeamBlueSwitch.isPressed();
         Position1SwitchRead = Position1Switch.isPressed();
@@ -131,23 +108,13 @@ public class MainAutonomous extends LinearOpMode {
         }
 
         while (opModeIsActive()) {
+            //Insert Instructions Here ;)
 
+            encoderDriveRotate(1,90,10);
 
-            telemetry.update();
-
-            //First Phase of Autonomous
-
-            //encoderDriveStraight(.20,72, 10);
-            encoderDriveRotate( 0.20,90, 5);
-            eTime2.reset();
-            while (eTime2.time() < 1) {
+            while (total_eTime.time() < 30) {
+                telemetry.addData("ConsoleOut", "Finished, Wait for end.");
             }
-            encoderDriveRotate( 0.20,-90, 5);
-
-
-            while ((totaleTime.time() < 30) && opModeIsActive()) ;
-            {}
-
         }
     }
 
@@ -185,10 +152,7 @@ public class MainAutonomous extends LinearOpMode {
 
             // reset the timeout time and start motion.
             runtime.reset();
-//            DriveLeftRear.setPower(Math.abs(speed));   // running these as abs values won't allow reverse direction!
-//            DriveRightRear.setPower(Math.abs(speed));
-//            DriveLeftFront.setPower(Math.abs(speed));
-//            DriveRightFront.setPower(Math.abs(speed));
+
             DriveLeftRear.setPower(speed * 1.05);
             DriveRightRear.setPower(speed);
             DriveLeftFront.setPower(speed * 1.05);
@@ -227,44 +191,36 @@ public class MainAutonomous extends LinearOpMode {
         }
 
     }
-
+    //Driving Function
     public void encoderDriveStraight(double speed,
                                      double inches,
                                      double timeoutS) {
+
         int newLeftBackTarget;
         int newRightBackTarget;
         int newLeftFrontTarget;
         int newRightFrontTarget;
 
-        boolean rightAhead = false;
-        boolean leftAhead = false;
-
         //Ensures OpMode is running & not out of time
-        if (opModeIsActive() && (totaleTime.time() < 29)) {
+        if (opModeIsActive() && (total_eTime.time() < 29)) {
 
             DriveLeftRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             DriveLeftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             DriveRightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             DriveRightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-            // Determine new target position, and pass to motor controller
-//            newLeftBackTarget = DriveLeftRear.getCurrentPosition() + (int) (inches * COUNTS_PER_INCH);
-//            newRightBackTarget = DriveRightRear.getCurrentPosition() + (int) (inches * COUNTS_PER_INCH);
-//            newLeftFrontTarget = DriveLeftFront.getCurrentPosition() + (int) (inches * COUNTS_PER_INCH);
-//            newRightFrontTarget = DriveRightFront.getCurrentPosition() + (int) (inches * COUNTS_PER_INCH);
             newLeftBackTarget = (int) (inches * COUNTS_PER_INCH);
             newRightBackTarget = (int) (inches * COUNTS_PER_INCH);
             newLeftFrontTarget = (int) (inches * COUNTS_PER_INCH);
             newRightFrontTarget = (int) (inches * COUNTS_PER_INCH);
 
-            //this logic originally drove backwards.  all neg values here fix that
             DriveLeftRear.setTargetPosition(-newLeftBackTarget);
             DriveRightRear.setTargetPosition(-newRightBackTarget);
             DriveLeftFront.setTargetPosition(-newLeftFrontTarget);
             DriveRightFront.setTargetPosition(-newRightFrontTarget);
             speed = - speed;
 
-            // Turn On RUN_TO_POSITION
+            //Turns On RUN_TO_POSITION
             DriveLeftRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             DriveRightRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             DriveLeftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -277,62 +233,21 @@ public class MainAutonomous extends LinearOpMode {
                     DriveLeftFront.getCurrentPosition(),
                     DriveRightFront.getCurrentPosition());
             telemetry.update();
-//            sleep(2000);   // optional pause after each move
 
-            // reset the timeout time and start motion.
+            // Reset TimeOut, start instruction
             runtime.reset();
-            DriveLeftRear.setPower(speed * 1.583); //This is with calibration added.
+            DriveLeftRear.setPower(speed * 1.583); //Originally 1.0
             DriveRightRear.setPower(speed);
-            DriveLeftFront.setPower(speed * 1.583); //This is with calibration added.
+            DriveLeftFront.setPower(speed * 1.583); //Originally 1.0
             DriveRightFront.setPower(speed);
 
 
             while (opModeIsActive() &&
                     (runtime.seconds() < timeoutS) &&
-                    (DriveLeftRear.isBusy() || DriveRightRear.isBusy())  //  || DriveLeftFront.isBusy() || DriveRightFront.isBusy())
-                    && (totaleTime.time() < 29)) {
-/*
-              //attempts to correct drive speed by allowing the side that is "behind" to catch up
-                if (speed > 0) {
-                    if ((DriveLeftRear.getCurrentPosition() > (DriveRightRear.getCurrentPosition() + 10)) && !leftAhead) {  //left is ahead
-                        DriveLeftRear.setPower(speed * 0.0);
-                        DriveLeftFront.setPower(speed * 0.0);
-                        leftAhead = true;
-                    } else if ((DriveLeftRear.getCurrentPosition() <= (DriveRightRear.getCurrentPosition())) && leftAhead) {  //right has caught up
-                        DriveLeftRear.setPower(speed);
-                        DriveLeftFront.setPower(speed);
-                        leftAhead = false;
-                    } else if ((DriveLeftRear.getCurrentPosition() < (DriveRightRear.getCurrentPosition() - 10)) && !rightAhead) {  //right is ahead
-                        DriveRightRear.setPower(speed * 0.0);
-                        DriveRightFront.setPower(speed * 0.0);
-                        rightAhead = true;
-                    } else if ((DriveLeftRear.getCurrentPosition() >= (DriveRightRear.getCurrentPosition())) && rightAhead) {  //left has caught up
-                        DriveRightRear.setPower(speed);
-                        DriveRightFront.setPower(speed);
-                        rightAhead = false;
-                    }
-                } else { //running in reverse
-                    if ((DriveLeftRear.getCurrentPosition() < (DriveRightRear.getCurrentPosition() - 10)) && !leftAhead) {  //left is ahead
-                        DriveLeftFront.setPower(speed * 0.0);
-                        DriveLeftRear.setPower(speed * 0.0);
-                        leftAhead = true;
-                    } else if ((DriveLeftRear.getCurrentPosition() >= (DriveRightRear.getCurrentPosition())) && leftAhead) {  //right has caught up
-                        DriveLeftFront.setPower(speed);
-                        DriveLeftRear.setPower(speed);
-                        leftAhead = false;
-                    } else if ((DriveLeftRear.getCurrentPosition() > (DriveRightRear.getCurrentPosition() + 10)) && !rightAhead) {  //right is ahead
-                        DriveRightFront.setPower(speed * 0.0);
-                        DriveRightRear.setPower(speed * 0.0);
-                        rightAhead = true;
-                    } else if ((DriveLeftRear.getCurrentPosition() <= (DriveRightRear.getCurrentPosition())) && rightAhead) {  //left has caught up
-                        DriveRightFront.setPower(speed);
-                        DriveRightRear.setPower(speed);
-                        rightAhead = false;
-                    }
-                }
+                    (DriveLeftRear.isBusy() || DriveRightRear.isBusy())
+                    && (total_eTime.time() < 29)) {
 
-*/
-                // Display it for the driver.
+                //Telemetry
                 telemetry.addData("Path1", "Running to %7d :%7d :%7d :%7d", newLeftBackTarget, newRightBackTarget, newLeftFrontTarget, newRightFrontTarget);
                 telemetry.addData("Path2", "Running at %7d :%7d :%7d :%7d",
                         DriveLeftRear.getCurrentPosition(),
@@ -343,45 +258,42 @@ public class MainAutonomous extends LinearOpMode {
 
             }
 
-            // Stop all motion;
+            //Stop all motion;
             runtime.reset();
             DriveLeftRear.setPower(0);
             DriveRightRear.setPower(0);
             DriveLeftFront.setPower(0);
             DriveRightFront.setPower(0);
 
-            // Turn off RUN_TO_POSITION
+            //Turns off RUN_TO_POSITION
             DriveLeftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             DriveRightRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             DriveLeftRear.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             DriveRightFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+
         }
 
     }
 
-
+    //Rotation Function
     public void encoderDriveRotate(double speed,
                                    double degrees,
                                    double timeoutS) {
+
         int newLeftBackTarget;
         int newRightBackTarget;
         int newLeftFrontTarget;
         int newRightFrontTarget;
 
         //Ensures OpMode is running & not out of time
-        if (opModeIsActive() && (totaleTime.time() < 29)) {
+        if (opModeIsActive() && (total_eTime.time() < 29)) {
 
             DriveLeftRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             DriveLeftFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             DriveRightRear.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             DriveRightFront.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-            // Determine new target position, and pass to motor controller
-//            newLeftBackTarget = DriveLeftRear.getCurrentPosition() - (int) (degrees * COUNTS_PER_DEGREE);
-//            newRightBackTarget = DriveRightRear.getCurrentPosition() + (int) (degrees * COUNTS_PER_DEGREE);
-//            newLeftFrontTarget = DriveLeftFront.getCurrentPosition() - (int) (degrees * COUNTS_PER_DEGREE);
-//            newRightFrontTarget = DriveRightFront.getCurrentPosition() + (int) (degrees * COUNTS_PER_DEGREE);
             newLeftBackTarget =  - (int) (degrees * COUNTS_PER_DEGREE);
             newRightBackTarget =  + (int) (degrees * COUNTS_PER_DEGREE);
             newLeftFrontTarget = - (int) (degrees * COUNTS_PER_DEGREE);
@@ -393,12 +305,13 @@ public class MainAutonomous extends LinearOpMode {
             DriveLeftFront.setTargetPosition(newLeftFrontTarget);
             DriveRightFront.setTargetPosition(newRightFrontTarget);
 
-            // Turn On RUN_TO_POSITION
+            //Turn On RUN_TO_POSITION
             DriveLeftRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             DriveRightRear.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             DriveLeftFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             DriveRightFront.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            // Display initial values for the driver.
+
+            //Telemetry
             telemetry.addData("encoderDriveOut", "encoderDriveRotate starting");
             telemetry.addData("Path1", "Running to %7d :%7d :%7d :%7d", newLeftBackTarget, newRightBackTarget, newLeftFrontTarget, newRightFrontTarget);
             telemetry.addData("Path2", "Running at %7d :%7d :%7d :%7d",
@@ -407,28 +320,27 @@ public class MainAutonomous extends LinearOpMode {
                     DriveLeftFront.getCurrentPosition(),
                     DriveRightFront.getCurrentPosition());
             telemetry.update();
-  //          sleep(2500);   // optional pause after each move
 
-            // reset the timeout time and start motion.
+            //Reset TimeOut, start motion
             runtime.reset();
             if (speed > 0.0) {
-                DriveLeftRear.setPower(-(speed * 1.583));
-                DriveRightRear.setPower(speed * 1.00);
-                DriveLeftFront.setPower(-(speed * 1.583));
-                DriveRightFront.setPower(speed * 1.00);
-            } else {   //run in reverse
+                DriveLeftRear.setPower(-(speed * 1.00)); //1.00
+                DriveRightRear.setPower(speed * 1.00); //1.00
+                DriveLeftFront.setPower(-(speed * 1.00)); //1.00
+                DriveRightFront.setPower(speed * 1.00); //1.00
+            } else {
                 DriveLeftRear.setPower(speed);
-                DriveRightRear.setPower(-(speed * 1.583));
+                DriveRightRear.setPower(-(speed * 1.00)); //1.00
                 DriveLeftFront.setPower(speed);
-                DriveRightFront.setPower(-(speed * 1.583));
+                DriveRightFront.setPower(-(speed * 1.00)); //1.00
             }
 
             while (opModeIsActive() &&
                     (runtime.seconds() < timeoutS)
-                    && (DriveLeftRear.isBusy() || DriveRightRear.isBusy())  //  || DriveLeftFront.isBusy() || DriveRightFront.isBusy())
-                    && (totaleTime.time() < 29)) {
+                    && (DriveLeftRear.isBusy() || DriveRightRear.isBusy())
+                    && (total_eTime.time() < 29)) {
 
-                // Display progress for the driver.
+                //Telemetry
                 telemetry.addData("Path1", "Running to %7d :%7d :%7d :%7d", newLeftBackTarget, newRightBackTarget, newLeftFrontTarget, newRightFrontTarget);
                 telemetry.addData("Path2", "Running at %7d :%7d :%7d :%7d",
                         DriveLeftRear.getCurrentPosition(),
@@ -454,96 +366,5 @@ public class MainAutonomous extends LinearOpMode {
 
 
         }
-
     }
-
-    public void gyroRotate(
-                             int degrees,      // max degrees should be <270
-                             double timeoutS) {
-
-        int degreesStart;
-        int degreesEnd;
-
-        double speed = 0.15;
-
-        sleep(5000);
-
-        Gyro.calibrate(); //Gyro Reset
-
-        sleep(5000);
-
-        //Ensures OpMode is running & not out of time
-        if (opModeIsActive() && (totaleTime.time() < 29)) {
-            runtime.reset();
-            degreesStart = Gyro.getHeading();
-            //degreesEnd = degreesStart + degrees;
-
-            DriveLeftRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            DriveRightRear.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            DriveLeftFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            DriveRightFront.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-            if (degrees<0) {
-                speed = -speed;
-
-                degrees = degrees + 360;
-            }
-
-            DriveLeftFront.setPower(speed);
-            DriveLeftRear.setPower(speed);
-            DriveRightFront.setPower(-speed);
-            DriveRightRear.setPower(-speed);
-
-            if (speed <  0) {
-                /*if (degreesEnd < 0){
-                    while (opModeIsActive()
-                            && (runtime.seconds() < timeoutS)
-                            && (totaleTime.time() < 29)
-                            && (Gyro.getHeading() < 340)) {
-                        telemetry.addData("Path1", "Gyro: %7d degreesEnd: %7d ", Gyro.getHeading(), degreesEnd);
-                        telemetry.update();
-                    }
-                    degreesEnd = degreesEnd + 360;
-                }*/
-                while (opModeIsActive()
-                        && (runtime.seconds() < timeoutS)
-                        && (totaleTime.time() < 29)
-                        && ((Gyro.getHeading() > degrees) || (Gyro.getHeading() == 0))
-                        ){
-                    telemetry.addData("Path1", "CCW Gyro: %7d degrees: %7d ", Gyro.getHeading(), degrees);
-                    telemetry.update();
-                }
-
-
-
-            } else if (speed >  0) {
-                /*if (degreesEnd >= 360) {
-                    while (opModeIsActive()
-                            && (runtime.seconds() < timeoutS)
-                            && (totaleTime.time() < 29)
-                            && (Gyro.getHeading() > 20)) {
-                        telemetry.addData("Path1", "Gyro: %7d degreesEnd: %7d ", Gyro.getHeading(), degreesEnd);
-                        telemetry.update();
-                    }
-                    degreesEnd = degreesEnd - 360;
-                }*/
-                while (opModeIsActive()
-                        && (runtime.seconds() < timeoutS)
-                        && (totaleTime.time() < 29)
-                        && (Gyro.getHeading() < degrees)) {
-                    telemetry.addData("Path1", "CW Gyro: %7d degrees: %7d ", Gyro.getHeading(), degrees);
-                    telemetry.update();
-                }
-            }
-
-            DriveLeftFront.setPower(0);
-            DriveLeftRear.setPower(0);
-            DriveRightFront.setPower(0);
-            DriveRightRear.setPower(0);
-
-
-        }
-
-    }
-
 }
