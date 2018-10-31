@@ -57,9 +57,9 @@ public class MainAutonomous extends LinearOpMode {
     private Servo JewelWhackerServo; //Jewel Whacker Servo
     private double servoJewelWhackerServoPosition = 0;
 
-    private Servo GlyphServoLeft; //Left half of glyph grabber
+    private Servo GlyphServoLeft; //Left half of glyph grabber.
     private double servoGlyphLeftPosition = 180;
-    private Servo GlyphServoRight; //Right half of glyph grabber
+    private Servo GlyphServoRight; //Right half of glyph grabber.
     private double servoGlyphRightPosition = 0;
 
     TouchSensor TeamBlueSwitch;
